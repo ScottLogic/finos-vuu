@@ -9,3 +9,4 @@ export * as OverflowContainer from "./OverflowContainer.examples";
 export * as Palette from "./Palette.examples";
 export * as Stack from "./Stack.examples";
 export * as View from "./View.examples";
+export * as SavePanel from "./SavePanel.examples";
