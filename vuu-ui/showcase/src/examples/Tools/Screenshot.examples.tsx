@@ -1,7 +1,8 @@
-import { toSvg } from "html-to-image";
+import { toBlob } from "html-to-image";
 import "./Screenshot.css";
-import { useState } from "react";
 import { DefaultJsonTable } from "../Table/JsonTable.examples";
+
+import { saveAs as fileSaverSaveAs } from "file-saver";
 
 let displaySequence = 1;
 
@@ -15,8 +16,6 @@ function Parrot() {
 }
 
 export const Screenshot = () => {
-  const [imgSrc, setImgSrc] = useState("");
-
   function filter(node: HTMLElement) {
     return (
       node.innerText !== null &&
@@ -27,11 +26,18 @@ export const Screenshot = () => {
 
   function takeScreenshotWithFilter(node: HTMLElement) {
     try {
-      toSvg(node, {
+      toBlob(node, {
         cacheBust: true,
         filter,
-      }).then(function (dataUrl) {
-        setImgSrc(dataUrl);
+      }).then(async function (blob) {
+        if (!blob) {
+          return;
+        }
+        if (window.saveAs) {
+          window.saveAs(blob, "screenshot.png");
+        } else {
+          fileSaverSaveAs(blob, "screenshot.png");
+        }
       });
     } catch (error) {
       console.log("Error taking screenshot", error);
@@ -40,8 +46,15 @@ export const Screenshot = () => {
 
   function takeScreenshot(node: HTMLElement) {
     try {
-      toSvg(node, { cacheBust: true }).then(function (dataUrl) {
-        setImgSrc(dataUrl);
+      toBlob(node, { cacheBust: true }).then(function (blob) {
+        if (!blob) {
+          return;
+        }
+        if (window.saveAs) {
+          window.saveAs(blob, "screenshot.png");
+        } else {
+          fileSaverSaveAs(blob, "screenshot.png");
+        }
       });
     } catch (error) {
       console.log("Error taking screenshot", error);
@@ -94,12 +107,12 @@ export const Screenshot = () => {
         Take Screenshot
       </button>
       Screenshot:
-      <img
-        id="screenshot-from-state"
-        className="screenshot"
-        src={imgSrc}
-        alt="screenshot-from-state"
-      />
+      {/*<img*/}
+      {/*  id="screenshot-from-state"*/}
+      {/*  className="screenshot"*/}
+      {/*  src={imgSrc}*/}
+      {/*  alt="screenshot-from-state"*/}
+      {/*/>*/}
     </div>
   );
 };
