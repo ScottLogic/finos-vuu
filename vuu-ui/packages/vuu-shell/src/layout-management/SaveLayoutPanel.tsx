@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import { Input, Button, FormField, FormFieldLabel } from "@salt-ds/core";
-import { ComboBox, Checkbox, RadioButton, RadioIcon } from "@finos/vuu-ui-controls";
+import { ComboBox, Checkbox, RadioButton } from "@finos/vuu-ui-controls";
 
 import "./SaveLayoutPanel.css";
 
@@ -24,7 +24,7 @@ const radioValues = [
   "Value 3"
 ] as const;
 
-type RadioValue = typeof radioValues[number] | undefined;
+type RadioValue = typeof radioValues[number];
 
 type SaveLayoutPanelProps = {
   onCancel: () => void,
@@ -113,7 +113,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
         </Button>
         <Button
           className="saveButton"
-          onClick={() => onSave(layoutName, group, checkValues, radioValue || "")}
+          onClick={() => onSave(layoutName, group, checkValues, radioValue)}
           disabled={layoutName === "" || group === ""}>
           Save
         </Button>
