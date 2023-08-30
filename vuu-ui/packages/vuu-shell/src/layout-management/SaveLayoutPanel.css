@@ -10,7 +10,7 @@
   font-family: Nunito Sans;
 }
 
-.panelContainer {
+.saveLayoutPanel-panelContainer {
   display: flex;
   padding: 16px;
   flex-direction: column;
@@ -18,13 +18,13 @@
   gap: 16px;
 }
 
-.panelContent {
+.saveLayoutPanel-panelContent {
   display: flex;
   align-items: flex-start;
   gap: 32px;
 }
 
-.formContainer {
+.saveLayoutPanel-formContainer {
   display: flex;
   width: 217px;
   flex-direction: column;
@@ -32,7 +32,7 @@
   gap: 16px;
 }
 
-.settingsGroup {
+.saveLayoutPanel-settingsGroup {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
@@ -41,7 +41,7 @@
   line-height: 16px;
 }
 
-.screenshotContainer {
+.saveLayoutPanel-screenshotContainer {
   display: flex;
   width: 304px;
   height: 208px;
@@ -52,7 +52,7 @@
   background: var(--dark-text-primary, #FFF);
 }
 
-.screenshot {
+.saveLayoutPanel-screenshot {
   /* Uncomment once screenshot functionality is implemented */
   /* background: url(<path-to-image>), lightgray 50% / cover no-repeat; */
   width: 273px;
@@ -60,7 +60,7 @@
   flex-shrink: 0;
 }
 
-.buttonsContainer {
+.saveLayoutPanel-buttonsContainer {
   display: flex;
   padding-top: 8px;
   justify-content: flex-end;
@@ -69,8 +69,8 @@
   align-self: stretch;
 }
 
-.cancelButton,
-.saveButton {
+.saveLayoutPanel-cancelButton,
+.saveLayoutPanel-saveButton {
   display: flex;
   height: fit-content;
   padding: 4px 8px;
@@ -86,25 +86,25 @@
   text-transform: uppercase;
 }
 
-.cancelButton {
+.saveLayoutPanel-cancelButton {
   color: var(--actionable-primary-foreground-default, #606477);
   background: var(--actionable-primary-background-default, #FFF);
 }
 
-.saveButton {
+.saveLayoutPanel-saveButton {
   background: #6D18BD;
   border-color: #6D18BD;
   color: white;
 }
 
-.saveButton.saltButton:disabled {
+.saveLayoutPanel-saveButton.saltButton:disabled {
   background: #6D18BD;
   border-color: #6D18BD;
   color: white;
   opacity: 0.3;
 }
 
-.saveButton.saltButton:hover {
+.saveLayoutPanel-saveButton.saltButton:hover {
   background: #F37880;
   border-color: #F37880;
   color: white;

@@ -4,6 +4,8 @@ import { ComboBox, Checkbox, RadioButton } from "@finos/vuu-ui-controls";
 
 import "./SaveLayoutPanel.css";
 
+const classBase = "saveLayoutPanel";
+
 const groups = [
   "Group 1",
   "Group 2",
@@ -40,9 +42,9 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
   const [radioValue, setRadioValue] = useState<RadioValue>(radioValues[0]);
 
   return (
-    <div className="panelContainer">
-      <div className="panelContent">
-        <div className="formContainer">
+    <div className={`${classBase}-panelContainer`}>
+      <div className={`${classBase}-panelContent`}>
+        <div className={`${classBase}-formContainer`}>
           <FormField>
             <FormFieldLabel>Group</FormFieldLabel>
             <ComboBox
@@ -76,7 +78,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
           </FormField>
           <FormField>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
-            <div className="settingsGroup">
+            <div className={`${classBase}-settingsGroup`}>
               {checkboxValues.map((value, i) =>
                 <Checkbox
                   key={i}
@@ -89,7 +91,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
           </FormField>
           <FormField>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
-            <div className="settingsGroup">
+            <div className={`${classBase}-settingsGroup`}>
               {radioValues.map((value, i) =>
                 <RadioButton
                   key={i}
@@ -102,16 +104,16 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
             </div>
           </FormField>
         </div>
-        <div className="screenshotContainer">
-          <div className="screenshot" />
+        <div className={`${classBase}-screenshotContainer`}>
+          <div className={`${classBase}-screenshot`} />
         </div>
       </div>
-      <div className="buttonsContainer">
-        <Button className="cancelButton" onClick={onCancel}>
+      <div className={`${classBase}-buttonsContainer`}>
+        <Button className={`${classBase}-cancelButton`} onClick={onCancel}>
           Cancel
         </Button>
         <Button
-          className="saveButton"
+          className={`${classBase}-saveButton`}
           onClick={() => onSave(layoutName, group, checkValues, radioValue)}
           disabled={layoutName === "" || group === ""}>
           Save
