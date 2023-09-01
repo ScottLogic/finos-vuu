@@ -6,3 +6,4 @@ export * from "./editable-label";
 export * from "./list";
 export * from "./tabstrip";
 export * from "./tree";
+export * from "./inputs";
