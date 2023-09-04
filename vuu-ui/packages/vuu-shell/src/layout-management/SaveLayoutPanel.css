@@ -32,6 +32,12 @@
   gap: 16px;
 }
 
+.saveLayoutPanel-formField {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
 .saveLayoutPanel-settingsGroup {
   display: flex;
   flex-wrap: wrap;

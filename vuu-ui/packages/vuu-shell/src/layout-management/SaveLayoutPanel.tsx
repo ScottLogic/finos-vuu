@@ -5,6 +5,7 @@ import { ComboBox, Checkbox, RadioButton, RadioIcon } from "@finos/vuu-ui-contro
 import "./SaveLayoutPanel.css";
 
 const classBase = "saveLayoutPanel";
+const formField = `${classBase}-formField`;
 
 const groups = [
   "Group 1",
@@ -46,7 +47,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
     <div className={`${classBase}-panelContainer`}>
       <div className={`${classBase}-panelContent`}>
         <div className={`${classBase}-formContainer`}>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Group</FormFieldLabel>
             <ComboBox
               ListProps={{
@@ -69,7 +70,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               onSelectionChange={(_, value) => setGroup(value || "")}
             />
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Layout Name</FormFieldLabel>
             <Input
               inputProps={{ placeholder: "Enter Layout Name" }}
@@ -77,7 +78,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               value={layoutName}
             />
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
             <div className={`${classBase}-settingsGroup`}>
               {checkboxValues.map((value, i) =>
@@ -90,7 +91,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               )}
             </div>
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
             <div className={`${classBase}-settingsGroup`}>
               {radioValues.map((value, i) =>
