@@ -183,7 +183,6 @@ export const ShellWithNewTheme = () => {
           style={{ maxHeight: 500, borderColor: "#6d188b" }}
           title={"Save Layout"}
           hideCloseButton
-          headerProps={{ className: "dialogHeader" }}
         >
           {dialogContent}
         </Dialog>

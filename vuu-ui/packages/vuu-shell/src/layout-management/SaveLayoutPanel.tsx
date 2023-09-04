@@ -1,8 +1,10 @@
 import { ChangeEvent, useState } from "react";
 import { Input, Button, FormField, FormFieldLabel } from "@salt-ds/core";
-import { ComboBox, Checkbox, RadioButton, RadioIcon } from "@finos/vuu-ui-controls";
+import { ComboBox, Checkbox, RadioButton } from "@finos/vuu-ui-controls";
 
 import "./SaveLayoutPanel.css";
+
+const classBase = "saveLayoutPanel";
 
 const groups = [
   "Group 1",
@@ -24,7 +26,7 @@ const radioValues = [
   "Value 3"
 ] as const;
 
-type RadioValue = typeof radioValues[number] | undefined;
+type RadioValue = typeof radioValues[number];
 
 type SaveLayoutPanelProps = {
   onCancel: () => void;
@@ -41,9 +43,9 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
   const [radioValue, setRadioValue] = useState<RadioValue>(radioValues[0]);
 
   return (
-    <div className="panelContainer">
-      <div className="panelContent">
-        <div className="formContainer">
+    <div className={`${classBase}-panelContainer`}>
+      <div className={`${classBase}-panelContent`}>
+        <div className={`${classBase}-formContainer`}>
           <FormField>
             <FormFieldLabel>Group</FormFieldLabel>
             <ComboBox
@@ -77,11 +79,10 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
           </FormField>
           <FormField>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
-            <div className="settingsGroup">
+            <div className={`${classBase}-settingsGroup`}>
               {checkboxValues.map((value, i) =>
                 <Checkbox
                   key={i}
-                  className="setting"
                   onToggle={() => setCheckValues((prev) => prev.includes(value) ? prev.filter(entry => entry !== value) : [...prev, value])}
                   checked={checkValues.includes(value)}
                   label={value}
@@ -91,7 +92,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
           </FormField>
           <FormField>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
-            <div className="settingsGroup">
+            <div className={`${classBase}-settingsGroup`}>
               {radioValues.map((value, i) =>
                 <RadioButton
                   key={i}
@@ -104,25 +105,25 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
             </div>
           </FormField>
         </div>
-        <div className="screenshotContainer">
+        <div className={`${classBase}-screenshotContainer`}>
           {screenshot ? (
             <img
-              className="screenshot"
+              className={`${classBase}-screenshot`}
               src={screenshot}
               alt="screenshot of current layout"
             />
           ) : (
-            <text className="screenshot">No screenshot available</text>
+            <text className={`${classBase}-screenshot`}>No screenshot available</text>
           )}
         </div>
       </div>
-      <div className="buttonsContainer">
-        <Button className="cancelButton" onClick={onCancel}>
+      <div className={`${classBase}-buttonsContainer`}>
+        <Button className={`${classBase}-cancelButton`} onClick={onCancel}>
           Cancel
         </Button>
         <Button
-          className="saveButton"
-          onClick={() => onSave(layoutName, group, checkValues, radioValue || "")}
+          className={`${classBase}-saveButton`}
+          onClick={() => onSave(layoutName, group, checkValues, radioValue)}
           disabled={layoutName === "" || group === ""}>
           Save
         </Button>
