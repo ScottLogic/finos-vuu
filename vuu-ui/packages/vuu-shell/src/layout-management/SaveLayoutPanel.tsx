@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from "react";
-import { Input, Button, FormField, FormFieldLabel } from "@salt-ds/core";
-import { ComboBox, Checkbox, RadioButton } from "@finos/vuu-ui-controls";
+import { Input, Button, FormField, FormFieldLabel, Text } from "@salt-ds/core";
+import { ComboBox, Checkbox, RadioButton, RadioIcon } from "@finos/vuu-ui-controls";
 
 import "./SaveLayoutPanel.css";
 
@@ -113,7 +113,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               alt="screenshot of current layout"
             />
           ) : (
-            <text className={`${classBase}-screenshot`}>No screenshot available</text>
+            <Text className={`${classBase}-screenshot`}>No screenshot available</Text>
           )}
         </div>
       </div>
