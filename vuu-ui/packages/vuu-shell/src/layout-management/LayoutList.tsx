@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react';
 import { List } from '@finos/vuu-ui-controls';
 import { LayoutMetadata } from './layoutTypes';
 
@@ -9,8 +10,8 @@ type LayoutGroups = {
 
 const classBase = "vuuLayoutList";
 
-export const LayoutsList = (props: { layouts: LayoutMetadata[] }) => {
-    const { layouts } = props;
+export const LayoutsList = (props: { layouts: LayoutMetadata[] } & HTMLAttributes<HTMLDivElement>) => {
+    const { layouts, ...otherProps } = props;
 
     const layoutsByGroup = layouts.reduce((acc: LayoutGroups, cur) => {
         if (acc[cur.group]) {
@@ -26,7 +27,7 @@ export const LayoutsList = (props: { layouts: LayoutMetadata[] }) => {
     }, {})
 
     return (
-        <>
+        <div className={classBase} {...otherProps}>
             <div className={`${classBase}-header`}>My Layouts</div>
             <List<[string, LayoutMetadata[]]>
                 height='fit-content'
@@ -54,7 +55,7 @@ export const LayoutsList = (props: { layouts: LayoutMetadata[] }) => {
                 </>
                 }
             />
-        </>
+        </div>
     );
 };
 

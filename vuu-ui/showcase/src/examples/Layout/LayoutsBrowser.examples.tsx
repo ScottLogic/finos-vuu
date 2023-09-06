@@ -8,21 +8,24 @@ const mockLayoutsMetadata: LayoutMetadata[] = [
         group: 'group1',
         screenshot: placeholderImage,
         user: "User 1",
-        date: "01/01/2023"
+        date: "01/01/2023",
+        id: "0"
     },
     {
         name: "layout3",
         group: 'group1',
         screenshot: placeholderImage,
         user: "User 3",
-        date: "01/01/2023"
+        date: "01/01/2023",
+        id: "1"
     },
     {
         name: "layout2",
         group: 'group2',
         screenshot: placeholderImage,
         user: 'User 2',
-        date: "01/01/2023"
+        date: "01/01/2023",
+        id: "2"
     }
 ]
 
