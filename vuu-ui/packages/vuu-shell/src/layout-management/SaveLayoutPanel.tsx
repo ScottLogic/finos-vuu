@@ -29,12 +29,13 @@ const radioValues = [
 type RadioValue = typeof radioValues[number];
 
 type SaveLayoutPanelProps = {
-  onCancel: () => void,
-  onSave: (layoutName: string, group: string, checkValues: string[], radioValue: string) => void
+  onCancel: () => void;
+  onSave: (layoutName: string, group: string, checkValues: string[], radioValue: string) => void;
+  screenshot: string | undefined;
 };
 
 export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
-  const { onCancel, onSave } = props;
+  const { onCancel, onSave, screenshot } = props;
 
   const [layoutName, setLayoutName] = useState<string>("");
   const [group, setGroup] = useState<string>("");
@@ -105,7 +106,15 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
           </FormField>
         </div>
         <div className={`${classBase}-screenshotContainer`}>
-          <div className={`${classBase}-screenshot`} />
+          {screenshot ? (
+            <img
+              className={`${classBase}-screenshot`}
+              src={screenshot}
+              alt="screenshot of current layout"
+            />
+          ) : (
+            <text className={`${classBase}-screenshot`}>No screenshot available</text>
+          )}
         </div>
       </div>
       <div className={`${classBase}-buttonsContainer`}>
