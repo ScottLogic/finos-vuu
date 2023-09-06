@@ -83,6 +83,7 @@ const ShellWithNewTheme = () => {
             <SaveLayoutPanel
               onCancel={handleCloseDialog}
               onSave={handleSave}
+              componentId={action.options.controlledComponentId}
             />
           );
           return true;
