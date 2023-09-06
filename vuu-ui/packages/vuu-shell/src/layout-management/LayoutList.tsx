@@ -1,6 +1,7 @@
 import { HTMLAttributes } from 'react';
 import { List } from '@finos/vuu-ui-controls';
 import { LayoutMetadata } from './layoutTypes';
+import { useLayoutManager } from './useLayoutManager';
 
 import './LayoutList.css'
 
@@ -10,10 +11,18 @@ type LayoutGroups = {
 
 const classBase = "vuuLayoutList";
 
-export const LayoutsList = (props: { layouts: LayoutMetadata[] } & HTMLAttributes<HTMLDivElement>) => {
-    const { layouts, ...otherProps } = props;
+export const LayoutsList = (props: HTMLAttributes<HTMLDivElement>) => {
+    const { layouts } = useLayoutManager();
 
-    const layoutsByGroup = layouts.reduce((acc: LayoutGroups, cur) => {
+    const layoutMetadata = layouts.map(layout => layout.metadata)
+
+    const handleLoadLayout = (layoutId?: string) => {
+        // TODO load layout   
+        console.log("loading layout with id", layoutId)
+        console.log("json:", layouts.find(layout => layout.metadata.id === layoutId))
+    }
+
+    const layoutsByGroup = layoutMetadata.reduce((acc: LayoutGroups, cur) => {
         if (acc[cur.group]) {
             return {
                 ...acc,
@@ -27,7 +36,7 @@ export const LayoutsList = (props: { layouts: LayoutMetadata[] } & HTMLAttribute
     }, {})
 
     return (
-        <div className={classBase} {...otherProps}>
+        <div className={classBase} {...props}>
             <div className={`${classBase}-header`}>My Layouts</div>
             <List<[string, LayoutMetadata[]]>
                 height='fit-content'
@@ -41,6 +50,7 @@ export const LayoutsList = (props: { layouts: LayoutMetadata[] } & HTMLAttribute
                             <div
                                 className={`${classBase}-layoutContainer`}
                                 key={layout?.id}
+                                onClick={() => handleLoadLayout(layout?.id)}
                             >
                                 <img className={`${classBase}-screenshot`} src={layout?.screenshot} />
                                 <div>
