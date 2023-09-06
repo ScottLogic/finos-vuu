@@ -1,3 +1,4 @@
+import { HTMLAttributes } from 'react';
 import { List } from '@finos/vuu-ui-controls';
 import { LayoutMetadata } from './layoutTypes';
 import { useLayoutManager } from './useLayoutManager';
@@ -10,7 +11,7 @@ type LayoutGroups = {
 
 const classBase = "vuuLayoutList";
 
-export const LayoutsList = () => {
+export const LayoutsList = (props: HTMLAttributes<HTMLDivElement>) => {
     const { layouts } = useLayoutManager();
 
     const layoutMetadata = layouts.map(layout => layout.metadata)
@@ -35,7 +36,7 @@ export const LayoutsList = () => {
     }, {})
 
     return (
-        <>
+        <div className={classBase} {...props}>
             <div className={`${classBase}-header`}>My Layouts</div>
             <List<[string, LayoutMetadata[]]>
                 height='fit-content'
@@ -64,7 +65,7 @@ export const LayoutsList = () => {
                 </>
                 }
             />
-        </>
+        </div>
     );
 };
 
