@@ -7,6 +7,7 @@ import { LayoutMetadata } from "./layoutTypes";
 import "./SaveLayoutPanel.css";
 
 const classBase = "saveLayoutPanel";
+const formField = `${classBase}-formField`;
 
 const groups = [
   "Group 1",
@@ -67,7 +68,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
     <div className={`${classBase}-panelContainer`}>
       <div className={`${classBase}-panelContent`}>
         <div className={`${classBase}-formContainer`}>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Group</FormFieldLabel>
             <ComboBox
               ListProps={{
@@ -82,6 +83,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               allowFreeText={true}
               InputProps={{
                 inputProps: {
+                  className: `${classBase}-inputText`,
                   placeholder: "Select Group or Enter New Name",
                   onChange: (event: ChangeEvent<HTMLInputElement>) => setGroup(event.target.value),
                 },
@@ -90,15 +92,18 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               onSelectionChange={(_, value) => setGroup(value || "")}
             />
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Layout Name</FormFieldLabel>
             <Input
-              inputProps={{ placeholder: "Enter Layout Name" }}
+              inputProps={{
+                className: `${classBase}-inputText`,
+                placeholder: "Enter Layout Name"
+              }}
               onChange={(event: ChangeEvent<HTMLInputElement>) => setLayoutName(event.target.value)}
               value={layoutName}
             />
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
             <div className={`${classBase}-settingsGroup`}>
               {checkboxValues.map((value, i) =>
@@ -111,7 +116,7 @@ export const SaveLayoutPanel = (props: SaveLayoutPanelProps) => {
               )}
             </div>
           </FormField>
-          <FormField>
+          <FormField className={formField}>
             <FormFieldLabel>Some Layout Setting</FormFieldLabel>
             <div className={`${classBase}-settingsGroup`}>
               {radioValues.map((value, i) =>
