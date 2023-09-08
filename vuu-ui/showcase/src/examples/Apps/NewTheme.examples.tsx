@@ -26,6 +26,7 @@ import {
   MenuBuilder,
 } from "@finos/vuu-data-types";
 import { AutoTableNext } from "../Table/TableNext.examples";
+import { LocalLayoutPersistenceManager } from "@finos/vuu-layout";
 
 import "./NewTheme.examples.css";
 
@@ -43,12 +44,11 @@ const ShellWithNewTheme = () => {
     setDialogContent(undefined);
   }, []);
 
-  const { saveLayout } = useLayoutManager();
+  const persistenceManager = new LocalLayoutPersistenceManager();
 
   const handleSave = useCallback((layoutMetadata: Omit<LayoutMetadata, "id">) => {
-    console.log(`Save layout as ${layoutMetadata.name} to group ${layoutMetadata.group}`);
-    saveLayout(layoutMetadata)
-    setDialogContent(undefined)
+    persistenceManager.saveLayout(layoutMetadata);
+    setDialogContent(undefined);
   }, []);
 
   const [buildMenuOptions, handleMenuAction] = useMemo<
