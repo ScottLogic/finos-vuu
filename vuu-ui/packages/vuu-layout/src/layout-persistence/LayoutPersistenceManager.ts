@@ -1,35 +1,32 @@
-import { LayoutJSON } from "../layout-reducer";
+import { LayoutJSON } from "@finos/vuu-layout";
 import { LayoutMetadata } from "@finos/vuu-shell";
 
 export interface LayoutPersistenceManager {
   /**
    * Saves a new layout
    *
-   * @param metadata - Metadata about the layout to be saved (without ID)
+   * @param metadata - Metadata about the layout to be saved (excluding ID)
    * @param layout   - Full JSON representation of the layout to be saved
    *
    * @returns ID assigned to the saved layout
    */
-  saveLayout: (metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => string;
+  saveLayout: (metadata: Omit<LayoutMetadata, "id">) => string;
 
   /**
    * Overwrites an existing layout with a new one
    *
-   * @param metadata - Metadata (including unique identifier) about the existing layout to be overwritten
+   * @param id       - Unique identifier of the existing layout to be updated
+   * @param metadata - Metadata describing the new layout to overwrite with (excluding ID)
    * @param layout   - Full JSON representation of the new layout to overwrite with
-   *
-   * @returns Version number assigned to the updated layout
    */
-  updateLayout: (metadata: LayoutMetadata, layout: LayoutJSON) => number;
+  updateLayout: (id: string, metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => void;
 
   /**
    * Deletes an existing layout
    *
    * @param id - Unique identifier of the existing layout to be deleted
-   *
-   * @returns true if delete was successful, false if delete was unsuccessful
    */
-  deleteLayout: (id: string) => boolean;
+  deleteLayout: (id: string) => void;
 
   /**
    * Retrieves an existing layout
