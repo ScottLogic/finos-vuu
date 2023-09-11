@@ -13,7 +13,10 @@ import {
   LayoutManagementProvider,
   useLayoutManager
 } from "@finos/vuu-shell";
-import { registerComponent } from "@finos/vuu-layout";
+import {
+  LocalLayoutPersistenceManager,
+  registerComponent
+} from "@finos/vuu-layout";
 import { TableSettingsPanel } from "@finos/vuu-table-extras";
 import {
   ContextMenuProvider,
@@ -46,7 +49,6 @@ const ShellWithNewTheme = () => {
   const { saveLayout } = useLayoutManager();
 
   const handleSave = useCallback((layoutMetadata: Omit<LayoutMetadata, "id">) => {
-    console.log(`Save layout as ${layoutMetadata.name} to group ${layoutMetadata.group}`);
     saveLayout(layoutMetadata)
     setDialogContent(undefined)
   }, []);
@@ -185,8 +187,9 @@ const ShellWithNewTheme = () => {
 };
 
 export const ShellWithNewThemeAndLayoutManagement = () => {
+  const pm = new LocalLayoutPersistenceManager();
   return (
-    <LayoutManagementProvider>
+    <LayoutManagementProvider persistenceManager={pm}>
       <ShellWithNewTheme />
     </LayoutManagementProvider>
   )

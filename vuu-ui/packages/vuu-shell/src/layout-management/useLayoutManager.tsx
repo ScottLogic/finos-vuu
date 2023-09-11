@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useContext, useEffect } from "react";
-import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
-import { LayoutJSON, LocalLayoutPersistenceManager } from "@finos/vuu-layout";
+import { getLocalEntity } from "@finos/vuu-filters";
+import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
 import { getUniqueId } from "@finos/vuu-utils";
 import { LayoutMetadata, Layout } from "./layoutTypes";
 
@@ -9,19 +9,19 @@ export const LayoutManagementContext = React.createContext<{
   saveLayout: (n: Omit<LayoutMetadata, "id">) => void
 }>({ layouts: [], saveLayout: () => { } })
 
-export const LayoutManagementProvider = (props: { children: JSX.Element | JSX.Element[] }) => {
-
-  const persistenceManager = new LocalLayoutPersistenceManager();
-
+export const LayoutManagementProvider = (props: {
+    persistenceManager: LayoutPersistenceManager,
+    children: JSX.Element | JSX.Element[]
+  }) => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
 
   useEffect(() => {
-    const layouts = persistenceManager.loadLayouts();
+    const layouts = props.persistenceManager.loadLayouts();
     setLayouts(layouts || [])
   }, [])
 
   useEffect(() => {
-    persistenceManager.saveLayout(layouts);
+    props.persistenceManager.saveLayout(layouts);
   }, [layouts])
 
   const saveLayout = useCallback((metadata: Omit<LayoutMetadata, "id">) => {
