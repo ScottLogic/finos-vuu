@@ -5,28 +5,16 @@ import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(metadata: Omit<LayoutMetadata, "id">): string {
-    console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
-    
-    const existingLayouts = this.getExistingLayouts();
-    const layoutJson = getLocalEntity<LayoutJSON>("api/vui");
-    const generatedId = getUniqueId();
-    
-    if (layoutJson) {
-      const newMetadata = {...metadata, id: generatedId} as LayoutMetadata;
-      const newLayout = {json: layoutJson, metadata: newMetadata} as Layout;
-      existingLayouts.push(newLayout);
-    }
-
-    saveLocalEntity<Layout[]>("layouts", existingLayouts);
-
-    return generatedId;
+  saveLayout(layouts: Layout[]): string {
+    console.log(`Saving layout as ${layouts[0]?.metadata.name} to group ${layouts[0]?.metadata.group}...`);
+    saveLocalEntity<Layout[]>("layouts", layouts);
+    return layouts[0]?.metadata.id;
   }
 
   updateLayout(id: string, newMetadata: Omit<LayoutMetadata, "id">, newLayoutJson: LayoutJSON): void {
     const layouts = this.getExistingLayouts();
     const layoutJson = getLocalEntity<LayoutJSON>("api/vui");
-    
+
     if (layoutJson) {
       layouts.filter(layout => layout.metadata.id !== id)
       const newLayout = {json: newLayoutJson, metadata: newMetadata} as Layout;
@@ -43,7 +31,7 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
 
   loadLayout(id: string): LayoutJSON {
     const layout = this.getExistingLayouts().filter(layout => layout.metadata.id === id);
-    
+
     switch (layout.length) {
       case 1: {
         return layout[0].json;
@@ -71,5 +59,10 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
 
   private getExistingLayouts() {
     return getLocalEntity<Layout[]>("layouts") || [];
+  }
+
+  // TODO: remove
+  loadLayouts(): Layout[] {
+    return this.getExistingLayouts();
   }
 }

@@ -146,7 +146,7 @@ export const LeftNav = ({
           Layout Templates
         </div>
         <div className="vuuLeftNav-drawer">
-          <LayoutsList layouts={[]} />
+          <LayoutsList/>
         </div>
       </Stack>
     </div>

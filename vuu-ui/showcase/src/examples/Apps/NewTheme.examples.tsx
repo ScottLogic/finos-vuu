@@ -26,7 +26,6 @@ import {
   MenuBuilder,
 } from "@finos/vuu-data-types";
 import { AutoTableNext } from "../Table/TableNext.examples";
-import { LocalLayoutPersistenceManager } from "@finos/vuu-layout";
 
 import "./NewTheme.examples.css";
 
@@ -44,11 +43,12 @@ const ShellWithNewTheme = () => {
     setDialogContent(undefined);
   }, []);
 
-  const persistenceManager = new LocalLayoutPersistenceManager();
+  const { saveLayout } = useLayoutManager();
 
   const handleSave = useCallback((layoutMetadata: Omit<LayoutMetadata, "id">) => {
-    persistenceManager.saveLayout(layoutMetadata);
-    setDialogContent(undefined);
+    console.log(`Save layout as ${layoutMetadata.name} to group ${layoutMetadata.group}`);
+    saveLayout(layoutMetadata)
+    setDialogContent(undefined)
   }, []);
 
   const [buildMenuOptions, handleMenuAction] = useMemo<
@@ -176,7 +176,6 @@ const ShellWithNewTheme = () => {
           style={{ maxHeight: 500, borderColor: "#6d188b" }}
           title={"Save Layout"}
           hideCloseButton
-          headerProps={{ className: "dialogHeader" }}
         >
           {dialogContent}
         </Dialog>
