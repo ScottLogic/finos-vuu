@@ -72,6 +72,7 @@ export const Shell = ({
   const [layout, saveLayoutConfig, loadLayoutById] = useLayoutConfig({
     defaultLayout,
     saveLocation,
+    saveUrl,
     user,
   });
 

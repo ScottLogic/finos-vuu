@@ -156,12 +156,11 @@ const ShellWithNewTheme = () => {
       menuBuilder={buildMenuOptions}
     >
       <Shell
-        defaultLayout={layout}
         leftSidePanelLayout="full-height"
         leftSidePanel={<LeftNav style={{ width: 240 }} />}
         loginUrl={window.location.toString()}
         user={user}
-        saveLocation="local"
+        saveUrl="http://127.0.0.1:3000/api/vui/layouts"
         style={
           {
             "--vuuShell-height": "100vh",

@@ -33,7 +33,7 @@ export const useLayoutConfig = ({
     async (id = "latest") => {
       try {
         const layout = await loadConfig(saveUrl, user, id);
-        _setLayout(layout);
+        _setLayout(layout.json);
       } catch {
         _setLayout(defaultLayout);
       }

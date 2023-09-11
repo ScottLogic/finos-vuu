@@ -1,11 +1,12 @@
 import { LayoutJSON } from "@finos/vuu-layout/src/layout-reducer";
 import { VuuUser } from "../shell";
+import { Layout } from "../layout-management";
 
 export const loadRemoteConfig = (
   saveUrl: string,
   user: VuuUser,
   id = "latest"
-): Promise<LayoutJSON> =>
+): Promise<Layout> =>
   new Promise((resolve, reject) => {
     fetch(`${saveUrl}/${user.username}/${id}`, {})
       .then((response) => {
