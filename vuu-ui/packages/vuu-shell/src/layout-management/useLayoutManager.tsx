@@ -5,7 +5,7 @@ import { LayoutMetadata, Layout } from "./layoutTypes";
 
 export const LayoutManagementContext = React.createContext<{
   layouts: Layout[],
-  saveLayout: (n: Omit<LayoutMetadata, "id">) => void
+  saveLayout: (n: LayoutMetadata) => void
 }>({ layouts: [], saveLayout: () => { } })
 
 export const LayoutManagementProvider = (props: {
@@ -13,8 +13,8 @@ export const LayoutManagementProvider = (props: {
     children: JSX.Element | JSX.Element[]
   }) => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
-  const [tempLayout, setTempLayout] = useState<LayoutJSON>();
-  const [tempMetadata, setTempMetadata] = useState<Omit<LayoutMetadata, "id">>();
+  const [layout, setLayout] = useState<LayoutJSON>();
+  const [metadata, setMetadata] = useState<LayoutMetadata>();
 
   useEffect(() => {
     const loadedLayouts = props.persistenceManager.loadLayouts();
@@ -22,28 +22,26 @@ export const LayoutManagementProvider = (props: {
   }, [])
 
   useEffect(() => {
-    if (tempLayout && tempMetadata) {
+    if (layout && metadata) {
       // Persist layouts
-      const generatedId = props.persistenceManager.saveLayout(tempMetadata, tempLayout);
+      const generatedId = props.persistenceManager.saveLayout(metadata, layout);
 
       // Update state
       const newLayout = {
-        json: tempLayout,
-        metadata: {
-          ...tempMetadata,
-          id: generatedId
-        }
+        json: layout,
+        metadata: metadata,
+        id: generatedId
       } as Layout;
 
       setLayouts(prev => [...prev, newLayout]);
     }
-  }, [tempLayout, tempMetadata])
+  }, [layout, metadata])
 
-  const saveLayout = useCallback((metadata: Omit<LayoutMetadata, "id">) => {
+  const saveLayout = useCallback((metadata: LayoutMetadata) => {
     const json = getLocalEntity<LayoutJSON>("api/vui");
     if (json) {
-      setTempLayout(json);
-      setTempMetadata(metadata);
+      setLayout(json);
+      setMetadata(metadata);
     }
   }, [])
 

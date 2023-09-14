@@ -6,10 +6,10 @@ export type LayoutMetadata = {
   screenshot: string;
   user: string;
   date: string;
-  id: string;
 };
 
 export type Layout = {
+  id: string,
   json: LayoutJSON;
   metadata: LayoutMetadata;
 };

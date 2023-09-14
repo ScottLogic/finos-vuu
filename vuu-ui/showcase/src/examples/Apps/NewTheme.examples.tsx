@@ -48,7 +48,7 @@ const ShellWithNewTheme = () => {
 
   const { saveLayout } = useLayoutManager();
 
-  const handleSave = useCallback((layoutMetadata: Omit<LayoutMetadata, "id">) => {
+  const handleSave = useCallback((layoutMetadata: LayoutMetadata) => {
     saveLayout(layoutMetadata)
     setDialogContent(undefined)
   }, []);

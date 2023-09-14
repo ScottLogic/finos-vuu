@@ -5,18 +5,14 @@ import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
+  saveLayout(metadata: LayoutMetadata, layout: LayoutJSON): string {
     console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
 
     const id = getUniqueId();
 
-    const newMetadata = {
-      ...metadata,
-      id: id
-    } as LayoutMetadata;
-
     const newLayout = {
-      metadata: newMetadata,
+      id: id,
+      metadata: metadata,
       json: layout
     } as Layout;
 
@@ -27,12 +23,12 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     return id;
   }
 
-  updateLayout(id: string, newMetadata: Omit<LayoutMetadata, "id">, newLayoutJson: LayoutJSON): void {
+  updateLayout(id: string, newMetadata: LayoutMetadata, newLayoutJson: LayoutJSON): void {
     const layouts = this.getExistingLayouts();
     const layoutJson = getLocalEntity<LayoutJSON>("api/vui");
 
     if (layoutJson) {
-      layouts.filter(layout => layout.metadata.id !== id)
+      layouts.filter(layout => layout.id !== id)
       const newLayout = {json: newLayoutJson, metadata: newMetadata} as Layout;
       layouts.push(newLayout);
     }
@@ -41,12 +37,12 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
   };
 
   deleteLayout(id: string): void {
-    const layouts = this.getExistingLayouts().filter(layout => layout.metadata.id !== id);
+    const layouts = this.getExistingLayouts().filter(layout => layout.id !== id);
     saveLocalEntity<Layout[]>("layouts", layouts);
   };
 
   loadLayout(id: string): LayoutJSON {
-    const layout = this.getExistingLayouts().filter(layout => layout.metadata.id === id);
+    const layout = this.getExistingLayouts().filter(layout => layout.id === id);
 
     switch (layout.length) {
       case 1: {
