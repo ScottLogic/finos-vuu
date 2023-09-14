@@ -5,19 +5,19 @@ import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(inputMetadata: Omit<LayoutMetadata, "id">, inputLayout: LayoutJSON): string {
-    console.log(`Saving layout as ${inputMetadata.name} to group ${inputMetadata.group}...`);
+  saveLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
+    console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
 
     const id = getUniqueId();
 
     const newMetadata = {
-      ...inputMetadata,
+      ...metadata,
       id: id
     } as LayoutMetadata;
 
     const newLayout = {
       metadata: newMetadata,
-      json: inputLayout
+      json: layout
     } as Layout;
 
     const layouts = this.getExistingLayouts();
@@ -26,10 +26,6 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
 
     return id;
   }
-
-  private deepCopy<T>(object: T): T {
-    return JSON.parse(JSON.stringify(object));
-  };
 
   updateLayout(id: string, newMetadata: Omit<LayoutMetadata, "id">, newLayoutJson: LayoutJSON): void {
     const layouts = this.getExistingLayouts();
