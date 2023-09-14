@@ -13,7 +13,7 @@ export const LayoutManagementProvider = (props: {
     children: JSX.Element | JSX.Element[]
   }) => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
-  const [tempLayouts, setTempLayouts] = useState<Layout[]>([]);
+  const [tempLayout, setTempLayout] = useState<Layout>();
 
   useEffect(() => {
     const loadedLayouts = props.persistenceManager.loadLayouts();
@@ -21,21 +21,21 @@ export const LayoutManagementProvider = (props: {
   }, [])
 
   useEffect(() => {
-    if (tempLayouts.length !== 0) {
+    if (tempLayout) {
       // Persist layouts
-      const generatedId = props.persistenceManager.saveLayout([...layouts, ...tempLayouts]);
+      const generatedId = props.persistenceManager.saveLayout(tempLayout);
 
       // Update state
-      const newLayout = tempLayouts[0];
+      const newLayout = tempLayout;
       newLayout.metadata.id = generatedId;
       setLayouts(prev => [...prev, newLayout]);
     }
-  }, [tempLayouts])
+  }, [tempLayout])
 
   const saveLayout = useCallback((metadata: Omit<LayoutMetadata, "id">) => {
     const json = getLocalEntity<LayoutJSON>("api/vui");
     if (json) {
-      setTempLayouts([...layouts, { metadata: { ...metadata, id: "" }, json }])
+      setTempLayout({ metadata: { ...metadata, id: "" }, json })
     }
   }, [])
 

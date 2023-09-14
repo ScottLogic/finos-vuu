@@ -5,19 +5,17 @@ import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(inputLayouts: Layout[]): string {
-    const layouts = Array.from(inputLayouts);
+  saveLayout(inputLayout: Layout): string {
+    console.log(`Saving layout as ${inputLayout.metadata.name} to group ${inputLayout.metadata.group}...`);
 
-    if (layouts.length === 0) {
-      return "";
-    }
-    
-    const layout = this.deepCopy(layouts[layouts.length - 1]);
-    console.log(`Saving layout as ${layout.metadata.name} to group ${layout.metadata.group}...`);
+    const layout = this.deepCopy(inputLayout);
     const id = getUniqueId();
     layout.metadata.id = id;
-    layouts[layouts.length - 1] = layout;
+
+    const layouts = this.getExistingLayouts();
+    layouts.push(layout);
     saveLocalEntity<Layout[]>("layouts", layouts);
+
     return id;
   }
 
