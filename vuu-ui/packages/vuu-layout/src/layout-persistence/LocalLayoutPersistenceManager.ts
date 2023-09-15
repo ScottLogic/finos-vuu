@@ -24,14 +24,15 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
   }
 
   updateLayout(id: string, newMetadata: LayoutMetadata, newLayoutJson: LayoutJSON): void {
-    const layouts = this.getExistingLayouts();
-    const layoutJson = getLocalEntity<LayoutJSON>("api/vui");
+    const layouts = this.getExistingLayouts().filter(layout => layout.id !== id);
 
-    if (layoutJson) {
-      layouts.filter(layout => layout.id !== id)
-      const newLayout = {json: newLayoutJson, metadata: newMetadata} as Layout;
-      layouts.push(newLayout);
-    }
+    const newLayout = {
+      id: id,
+      json: newLayoutJson,
+      metadata: newMetadata
+    };
+
+    layouts.push(newLayout);
 
     saveLocalEntity<Layout[]>("layouts", layouts);
   };
@@ -67,7 +68,7 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
   loadMetadataByUser(user: string): PersistedLayoutMetadata[] {
     const layouts = this.getExistingLayouts()
       .filter(layout => layout.metadata.user === user);
-    
+
     return this.getPersistedMetadata(layouts);
   };
 
