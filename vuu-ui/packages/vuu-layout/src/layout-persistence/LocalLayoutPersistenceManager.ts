@@ -65,13 +65,6 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     return this.getPersistedMetadata(layouts);
   };
 
-  loadMetadataByUser(user: string): PersistedLayoutMetadata[] {
-    const layouts = this.getExistingLayouts()
-      .filter(layout => layout.metadata.user === user);
-
-    return this.getPersistedMetadata(layouts);
-  };
-
   // TODO: remove
   loadLayouts(): Layout[] {
     return this.getExistingLayouts();

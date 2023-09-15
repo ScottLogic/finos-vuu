@@ -44,15 +44,6 @@ export interface LayoutPersistenceManager {
    */
   loadMetadata: () => PersistedLayoutMetadata[];
 
-  /**
-   * Retrieves metadata for all existing layouts created by a given user
-   *
-   * @param user - Name of user
-   *
-   * @returns an array of metadata describing all persisted layouts created by {@link user}
-   */
-  loadMetadataByUser: (user: string) => PersistedLayoutMetadata[];
-
   // TODO: should be switched over to load metadata only; remove this
   loadLayouts: () => Layout[];
 }
