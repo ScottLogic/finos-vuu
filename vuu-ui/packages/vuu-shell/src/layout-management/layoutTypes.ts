@@ -8,6 +8,11 @@ export type LayoutMetadata = {
   date: string;
 };
 
+export type PersistedLayoutMetadata = {
+  id: string,
+  metadata: LayoutMetadata
+}
+
 export type Layout = {
   id: string,
   json: LayoutJSON;

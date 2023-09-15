@@ -1,4 +1,4 @@
-import { Layout, LayoutMetadata } from "@finos/vuu-shell";
+import { Layout, LayoutMetadata, PersistedLayoutMetadata } from "@finos/vuu-shell";
 import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
 
 import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
@@ -59,22 +59,38 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     }
   };
 
-  loadMetadata(): LayoutMetadata[] {
-    return this.getExistingLayouts().map(layout => layout.metadata);
+  loadMetadata(): PersistedLayoutMetadata[] {
+    const layouts = this.getExistingLayouts();
+    return this.getPersistedMetadata(layouts);
   };
 
-  loadMetadataByUser(user: string): LayoutMetadata[] {
-    return this.getExistingLayouts()
-      .filter(layout => layout.metadata.user === user)
-      .map(layout => layout.metadata);
+  loadMetadataByUser(user: string): PersistedLayoutMetadata[] {
+    const layouts = this.getExistingLayouts()
+      .filter(layout => layout.metadata.user === user);
+    
+    return this.getPersistedMetadata(layouts);
   };
+
+  // TODO: remove
+  loadLayouts(): Layout[] {
+    return this.getExistingLayouts();
+  }
 
   private getExistingLayouts() {
     return getLocalEntity<Layout[]>("layouts") || [];
   }
 
-  // TODO: remove
-  loadLayouts(): Layout[] {
-    return this.getExistingLayouts();
+  private getPersistedMetadata(layouts: Layout[]): PersistedLayoutMetadata[] {
+    const metadata = [] as PersistedLayoutMetadata[];
+
+    for (var layout of layouts) {
+      const newMetadata = {
+        id: layout.id,
+        metadata: layout.metadata
+      } as PersistedLayoutMetadata;
+      metadata.push(newMetadata);
+    }
+
+    return metadata;
   }
 }

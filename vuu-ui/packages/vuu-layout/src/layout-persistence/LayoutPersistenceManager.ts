@@ -1,5 +1,5 @@
 import { LayoutJSON } from "@finos/vuu-layout";
-import { Layout, LayoutMetadata } from "@finos/vuu-shell";
+import { Layout, LayoutMetadata, PersistedLayoutMetadata } from "@finos/vuu-shell";
 
 export interface LayoutPersistenceManager {
   /**
@@ -42,7 +42,7 @@ export interface LayoutPersistenceManager {
    *
    * @returns an array of all persisted layout metadata
    */
-  loadMetadata: () => LayoutMetadata[];
+  loadMetadata: () => PersistedLayoutMetadata[];
 
   /**
    * Retrieves metadata for all existing layouts created by a given user
@@ -51,7 +51,7 @@ export interface LayoutPersistenceManager {
    *
    * @returns an array of metadata describing all persisted layouts created by {@link user}
    */
-  loadMetadataByUser: (user: string) => LayoutMetadata[];
+  loadMetadataByUser: (user: string) => PersistedLayoutMetadata[];
 
   // TODO: should be switched over to load metadata only; remove this
   loadLayouts: () => Layout[];
