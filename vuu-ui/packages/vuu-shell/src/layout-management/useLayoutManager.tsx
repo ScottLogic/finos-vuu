@@ -1,7 +1,9 @@
 import React, { useState, useCallback, useContext, useEffect } from "react";
 import { getLocalEntity } from "@finos/vuu-filters";
-import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
+import { LayoutJSON, LocalLayoutPersistenceManager } from "@finos/vuu-layout";
 import { LayoutMetadata, Layout } from "./layoutTypes";
+
+const persistenceManager = new LocalLayoutPersistenceManager();
 
 export const LayoutManagementContext = React.createContext<{
   layouts: Layout[],
@@ -10,14 +12,13 @@ export const LayoutManagementContext = React.createContext<{
 }>({ layouts: [], layoutMetadata: [], saveLayout: () => { } })
 
 export const LayoutManagementProvider = (props: {
-    persistenceManager: LayoutPersistenceManager,
     children: JSX.Element | JSX.Element[]
   }) => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
   const [layoutMetadata, setLayoutMetadata] = useState<LayoutMetadata[]>([]);
 
   useEffect(() => {
-    const loadedLayouts = props.persistenceManager.loadLayouts();
+    const loadedLayouts = persistenceManager.loadLayouts();
     setLayouts(loadedLayouts || [])
   }, [])
 
@@ -26,7 +27,7 @@ export const LayoutManagementProvider = (props: {
 
     if (json) {
       // Persist layouts
-      const generatedId = props.persistenceManager.saveLayout(metadata, json);
+      const generatedId = persistenceManager.saveLayout(metadata, json);
 
       // Update state
       const newMetadata = {

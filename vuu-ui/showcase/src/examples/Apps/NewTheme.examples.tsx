@@ -187,9 +187,8 @@ const ShellWithNewTheme = () => {
 };
 
 export const ShellWithNewThemeAndLayoutManagement = () => {
-  const pm = new LocalLayoutPersistenceManager();
   return (
-    <LayoutManagementProvider persistenceManager={pm}>
+    <LayoutManagementProvider>
       <ShellWithNewTheme />
     </LayoutManagementProvider>
   )
