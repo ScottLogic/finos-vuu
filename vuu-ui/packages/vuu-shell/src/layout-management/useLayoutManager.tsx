@@ -36,7 +36,6 @@ export const LayoutManagementProvider = (props: {
 
       const newLayout = {
         json: json,
-        metadata: newMetadata,
         id: generatedId
       } as Layout;
 

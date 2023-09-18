@@ -12,5 +12,4 @@ export type LayoutMetadata = {
 export type Layout = {
   id: string,
   json: LayoutJSON;
-  metadata: LayoutMetadata;
 };
