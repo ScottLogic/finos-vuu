@@ -1,20 +1,25 @@
-import { Layout, LayoutMetadata, PersistedLayoutMetadata } from "@finos/vuu-shell";
+import { Layout, LayoutMetadata } from "@finos/vuu-shell";
 import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
 
 import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(metadata: LayoutMetadata, layout: LayoutJSON): string {
+  saveLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
     console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
 
     const id = getUniqueId();
 
+    const newMetadata = {
+      id: id,
+      ...metadata
+    };
+
     const newLayout = {
       id: id,
-      metadata: metadata,
+      metadata: newMetadata,
       json: layout
-    } as Layout;
+    };
 
     const layouts = this.getExistingLayouts();
     layouts.push(newLayout);
@@ -23,9 +28,14 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     return id;
   }
 
-  updateLayout(id: string, newMetadata: LayoutMetadata, newLayoutJson: LayoutJSON): void {
+  updateLayout(id: string, metadata: Omit<LayoutMetadata, "id">, newLayoutJson: LayoutJSON): void {
     const layouts = this.getExistingLayouts().filter(layout => layout.id !== id);
 
+    const newMetadata = {
+      id: id,
+      ...metadata
+    }
+    
     const newLayout = {
       id: id,
       json: newLayoutJson,
@@ -60,9 +70,8 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     }
   };
 
-  loadMetadata(): PersistedLayoutMetadata[] {
-    const layouts = this.getExistingLayouts();
-    return this.getPersistedMetadata(layouts);
+  loadMetadata(): LayoutMetadata[] {
+    return this.getExistingLayouts().map(layout => layout.metadata);
   };
 
   // TODO: remove
@@ -70,21 +79,7 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     return this.getExistingLayouts();
   }
 
-  private getExistingLayouts() {
+  private getExistingLayouts(): Layout[] {
     return getLocalEntity<Layout[]>("layouts") || [];
-  }
-
-  private getPersistedMetadata(layouts: Layout[]): PersistedLayoutMetadata[] {
-    const metadata = [] as PersistedLayoutMetadata[];
-
-    for (var layout of layouts) {
-      const newMetadata = {
-        id: layout.id,
-        metadata: layout.metadata
-      } as PersistedLayoutMetadata;
-      metadata.push(newMetadata);
-    }
-
-    return metadata;
   }
 }

@@ -33,7 +33,7 @@ type RadioValue = typeof radioValues[number];
 
 type SaveLayoutPanelProps = {
   onCancel: () => void;
-  onSave: (layoutMetadata: LayoutMetadata) => void;
+  onSave: (layoutMetadata: Omit<LayoutMetadata, "id">) => void;
   componentId?: string
 };
 

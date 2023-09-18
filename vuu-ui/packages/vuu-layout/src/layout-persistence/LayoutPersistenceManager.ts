@@ -1,5 +1,5 @@
 import { LayoutJSON } from "@finos/vuu-layout";
-import { Layout, LayoutMetadata, PersistedLayoutMetadata } from "@finos/vuu-shell";
+import { Layout, LayoutMetadata } from "@finos/vuu-shell";
 
 export interface LayoutPersistenceManager {
   /**
@@ -10,7 +10,7 @@ export interface LayoutPersistenceManager {
    *
    * @returns ID assigned to the saved layout
    */
-  saveLayout: (metadata: LayoutMetadata, layout: LayoutJSON) => string;
+  saveLayout: (metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => string;
 
   /**
    * Overwrites an existing layout with a new one
@@ -19,7 +19,7 @@ export interface LayoutPersistenceManager {
    * @param metadata - Metadata describing the new layout to overwrite with
    * @param layout   - Full JSON representation of the new layout to overwrite with
    */
-  updateLayout: (id: string, metadata: LayoutMetadata, layout: LayoutJSON) => void;
+  updateLayout: (id: string, metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => void;
 
   /**
    * Deletes an existing layout
@@ -42,7 +42,7 @@ export interface LayoutPersistenceManager {
    *
    * @returns an array of all persisted layout metadata
    */
-  loadMetadata: () => PersistedLayoutMetadata[];
+  loadMetadata: () => LayoutMetadata[];
 
   // TODO: should be switched over to load metadata only; remove this
   loadLayouts: () => Layout[];

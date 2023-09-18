@@ -5,48 +5,48 @@ import { LayoutMetadata, Layout } from "./layoutTypes";
 
 export const LayoutManagementContext = React.createContext<{
   layouts: Layout[],
-  saveLayout: (n: LayoutMetadata) => void
-}>({ layouts: [], saveLayout: () => { } })
+  layoutMetadata: LayoutMetadata[],
+  saveLayout: (n: Omit<LayoutMetadata, "id">) => void
+}>({ layouts: [], layoutMetadata: [], saveLayout: () => { } })
 
 export const LayoutManagementProvider = (props: {
     persistenceManager: LayoutPersistenceManager,
     children: JSX.Element | JSX.Element[]
   }) => {
   const [layouts, setLayouts] = useState<Layout[]>([]);
-  const [layout, setLayout] = useState<LayoutJSON>();
-  const [metadata, setMetadata] = useState<LayoutMetadata>();
+  const [layoutMetadata, setLayoutMetadata] = useState<LayoutMetadata[]>([]);
 
   useEffect(() => {
     const loadedLayouts = props.persistenceManager.loadLayouts();
     setLayouts(loadedLayouts || [])
   }, [])
 
-  useEffect(() => {
-    if (layout && metadata) {
+  const saveLayout = useCallback((metadata: Omit<LayoutMetadata, "id">) => {
+    const json = getLocalEntity<LayoutJSON>("api/vui");
+
+    if (json) {
       // Persist layouts
-      const generatedId = props.persistenceManager.saveLayout(metadata, layout);
+      const generatedId = props.persistenceManager.saveLayout(metadata, json);
 
       // Update state
+      const newMetadata = {
+        ...metadata,
+        id: generatedId
+      } as LayoutMetadata;
+
       const newLayout = {
-        json: layout,
-        metadata: metadata,
+        json: json,
+        metadata: newMetadata,
         id: generatedId
       } as Layout;
 
       setLayouts(prev => [...prev, newLayout]);
-    }
-  }, [layout, metadata])
-
-  const saveLayout = useCallback((metadata: LayoutMetadata) => {
-    const json = getLocalEntity<LayoutJSON>("api/vui");
-    if (json) {
-      setLayout(json);
-      setMetadata(metadata);
+      setLayoutMetadata(prev => [...prev, newMetadata]);
     }
   }, [])
 
   return (
-    <LayoutManagementContext.Provider value={{ layouts, saveLayout }} >
+    <LayoutManagementContext.Provider value={{ layouts, layoutMetadata, saveLayout }} >
       {props.children}
     </LayoutManagementContext.Provider>
   )
