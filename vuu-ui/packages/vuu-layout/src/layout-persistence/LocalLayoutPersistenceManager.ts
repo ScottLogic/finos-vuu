@@ -11,47 +11,21 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
   saveLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
     console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
 
-    const layouts = this.loadLayouts();
-    const persistedMetadata = this.loadMetadata();
+    const existingLayouts = this.loadLayouts();
+    const existingMetadata = this.loadMetadata();
 
     const id = getUniqueId();
 
-    const newMetadata = {
-      id: id,
-      ...metadata
-    };
-
-    const newLayout = {
-      id: id,
-      json: layout
-    };
-
-    layouts.push(newLayout);
-    persistedMetadata.push(newMetadata);
-
-    this.saveLayoutsWithMetadata(layouts, persistedMetadata);
+    this.appendAndPersist(id, metadata, layout, existingLayouts, existingMetadata);
 
     return id;
   }
 
   updateLayout(id: string, metadata: Omit<LayoutMetadata, "id">, newLayoutJson: LayoutJSON): void {
-    const layouts = this.loadLayouts().filter(layout => layout.id !== id);
-    const persistedMetadata = this.loadMetadata().filter(metadata => metadata.id !== id);
+    const existingLayouts = this.loadLayouts().filter(layout => layout.id !== id);
+    const existingMetadata = this.loadMetadata().filter(metadata => metadata.id !== id);
 
-    const newMetadata = {
-      id: id,
-      ...metadata
-    }
-    
-    const newLayout = {
-      id: id,
-      json: newLayoutJson,
-    };
-
-    layouts.push(newLayout);
-    persistedMetadata.push(newMetadata);
-
-    this.saveLayoutsWithMetadata(layouts, persistedMetadata);
+    this.appendAndPersist(id, metadata, newLayoutJson, existingLayouts, existingMetadata);
   }
 
   deleteLayout(id: string): void {
@@ -86,6 +60,17 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
   // TODO: make private
   loadLayouts(): Layout[] {
     return getLocalEntity<Layout[]>(layoutsSaveLocation) || [];
+  }
+
+  private appendAndPersist(newId: string,
+                           newMetadata: Omit<LayoutMetadata, "id">,
+                           newLayout: LayoutJSON,
+                           existingLayouts: Layout[],
+                           existingMetadata: LayoutMetadata[]) {
+    existingLayouts.push({id: newId, json: newLayout});
+    existingMetadata.push({id: newId, ...newMetadata});
+
+    this.saveLayoutsWithMetadata(existingLayouts, existingMetadata);
   }
 
   private saveLayoutsWithMetadata(layouts: Layout[], metadata: LayoutMetadata[]): void {
