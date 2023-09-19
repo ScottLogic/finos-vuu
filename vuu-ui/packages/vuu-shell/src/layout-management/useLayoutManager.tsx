@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useContext, useEffect } from "react";
 import { getLocalEntity } from "@finos/vuu-filters";
 import { LayoutJSON, LocalLayoutPersistenceManager } from "@finos/vuu-layout";
-import { LayoutMetadata, Layout } from "./layoutTypes";
+import { LayoutMetadata } from "./layoutTypes";
 
 const persistenceManager = new LocalLayoutPersistenceManager();
 
@@ -33,14 +33,11 @@ export const LayoutManagementProvider = (props: {
         id: generatedId
       };
 
-      const newLayout: Layout = {
-        json: json,
-        id: generatedId
-      };
-
       setLayoutMetadata(prev => [...prev, newMetadata]);
     }
   }, [])
+
+  // TODO: add loadLayout function
 
   return (
     <LayoutManagementContext.Provider value={{ layoutMetadata, saveLayout }} >
