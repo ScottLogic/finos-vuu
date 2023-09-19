@@ -28,12 +28,12 @@ export const LayoutManagementProvider = (props: {
       const generatedId = persistenceManager.saveLayout(metadata, json);
 
       // Update state
-      const newMetadata = {
+      const newMetadata: LayoutMetadata = {
         ...metadata,
         id: generatedId
       };
 
-      const newLayout = {
+      const newLayout: Layout = {
         json: json,
         id: generatedId
       };
