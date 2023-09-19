@@ -13,10 +13,7 @@ import {
   LayoutManagementProvider,
   useLayoutManager
 } from "@finos/vuu-shell";
-import {
-  LocalLayoutPersistenceManager,
-  registerComponent
-} from "@finos/vuu-layout";
+import { registerComponent } from "@finos/vuu-layout";
 import { TableSettingsPanel } from "@finos/vuu-table-extras";
 import {
   ContextMenuProvider,

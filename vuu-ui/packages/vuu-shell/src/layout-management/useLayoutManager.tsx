@@ -33,12 +33,12 @@ export const LayoutManagementProvider = (props: {
       const newMetadata = {
         ...metadata,
         id: generatedId
-      } as LayoutMetadata;
+      };
 
       const newLayout = {
         json: json,
         id: generatedId
-      } as Layout;
+      };
 
       setLayouts(prev => [...prev, newLayout]);
       setLayoutMetadata(prev => [...prev, newMetadata]);
