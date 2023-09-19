@@ -57,8 +57,7 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
     return getLocalEntity<LayoutMetadata[]>(metadataSaveLocation) || [];
   }
 
-  // TODO: make private
-  loadLayouts(): Layout[] {
+  private loadLayouts(): Layout[] {
     return getLocalEntity<Layout[]>(layoutsSaveLocation) || [];
   }
 

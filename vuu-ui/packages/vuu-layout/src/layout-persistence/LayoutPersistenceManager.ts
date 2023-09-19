@@ -43,7 +43,4 @@ export interface LayoutPersistenceManager {
    * @returns an array of all persisted layout metadata
    */
   loadMetadata: () => LayoutMetadata[];
-
-  // TODO: should be switched over to load metadata only; remove this
-  loadLayouts: () => Layout[];
 }
