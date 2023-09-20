@@ -13,7 +13,7 @@ export const LayoutManagementContext = React.createContext<{
   saveLayout: (n: Omit<LayoutMetadata, "id">) => void,
   tempLayout: LayoutJSON,
   saveTempLayout: (layout: LayoutJSON) => void,
-  loadLayoutById: (id: string) => LayoutJSON
+  loadLayoutById: (id: string) => void
 }>({
   layoutMetadata: [],
   saveLayout: () => { },
@@ -58,7 +58,10 @@ export const LayoutManagementProvider = (props: {
     }
   }, [])
 
-  const loadLayoutById = useCallback((id) => persistenceManager.loadLayout(id), []);
+  const loadLayoutById = useCallback((id: string) => {
+    const json = persistenceManager.loadLayout(id)
+    setTempLayout(json)
+  }, []);
 
   return (
     <LayoutManagementContext.Provider value={{ layoutMetadata, saveLayout, tempLayout, saveTempLayout, loadLayoutById }} >

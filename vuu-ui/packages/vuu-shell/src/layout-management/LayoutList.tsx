@@ -12,12 +12,15 @@ type LayoutGroups = {
 const classBase = "vuuLayoutList";
 
 export const LayoutsList = (props: HTMLAttributes<HTMLDivElement>) => {
-    const { layoutMetadata } = useLayoutManager();
+    const { layoutMetadata, loadLayoutById } = useLayoutManager();
 
     const handleLoadLayout = (layoutId?: string) => {
-        // TODO load layout
-        console.log("loading layout with id", layoutId)
-        console.log("json:", layoutMetadata.find(metadata => metadata.id === layoutId))
+        if (layoutId){
+            loadLayoutById(layoutId)
+        }
+        else{
+            console.log("can't load layout")
+        }
     }
 
     const layoutsByGroup = layoutMetadata.reduce((acc: LayoutGroups, cur) => {
