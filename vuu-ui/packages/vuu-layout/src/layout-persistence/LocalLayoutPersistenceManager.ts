@@ -3,6 +3,7 @@ import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
 
 import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { getUniqueId } from "@finos/vuu-utils";
+import { defaultLayout, warningLayout } from "./data";
 
 const metadataSaveLocation = "layouts/metadata";
 const layoutsSaveLocation = "layouts/layouts";
@@ -55,6 +56,15 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
 
   loadMetadata(): LayoutMetadata[] {
     return getLocalEntity<LayoutMetadata[]>(metadataSaveLocation) || [];
+  }
+
+  loadTempLayout(): LayoutJSON{
+
+    return getLocalEntity<LayoutJSON>("api/vui") || defaultLayout
+  }
+
+  saveTempLayout(layout: LayoutJSON): void{
+    saveLocalEntity<LayoutJSON>("api/vui", layout)
   }
 
   private loadLayouts(): Layout[] {
