@@ -10,7 +10,7 @@ export interface LayoutPersistenceManager {
    *
    * @returns ID assigned to the saved layout
    */
-  saveLayout: (metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => string;
+  createLayout: (metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => string;
 
   /**
    * Overwrites an existing layout with a new one

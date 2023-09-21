@@ -25,7 +25,7 @@ export const LayoutManagementProvider = (props: {
 
     if (json) {
       // Persist layouts
-      const generatedId = persistenceManager.saveLayout(metadata, json);
+      const generatedId = persistenceManager.createLayout(metadata, json);
 
       // Update state
       const newMetadata: LayoutMetadata = {

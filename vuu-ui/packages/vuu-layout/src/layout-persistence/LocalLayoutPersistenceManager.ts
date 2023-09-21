@@ -8,7 +8,7 @@ const metadataSaveLocation = "layouts/metadata";
 const layoutsSaveLocation = "layouts/layouts";
 
 export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  saveLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
+  createLayout(metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON): string {
     console.log(`Saving layout as ${metadata.name} to group ${metadata.group}...`);
 
     const existingLayouts = this.loadLayouts();
