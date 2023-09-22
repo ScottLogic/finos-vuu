@@ -42,20 +42,16 @@ export const LayoutManagementProvider = (props: {
   }, []);
 
   const saveLayout = useCallback((metadata: Omit<LayoutMetadata, "id">) => {
-    const json = getLocalEntity<LayoutJSON>("api/vui");
 
-    if (json) {
       // Persist layouts
-      const generatedId = persistenceManager.saveLayout(metadata, json);
+      const generatedId = persistenceManager.saveLayout(metadata, tempLayout);
 
       // Update state
       const newMetadata: LayoutMetadata = {
         ...metadata,
         id: generatedId
       };
-
       setLayoutMetadata(prev => [...prev, newMetadata]);
-    }
   }, [])
 
   const loadLayoutById = useCallback((id: string) => {
