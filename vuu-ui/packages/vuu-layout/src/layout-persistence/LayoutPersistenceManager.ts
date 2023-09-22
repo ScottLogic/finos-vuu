@@ -3,17 +3,17 @@ import { LayoutMetadata } from "@finos/vuu-shell";
 
 export interface LayoutPersistenceManager {
   /**
-   * Saves a new layout
+   * Saves a new layout and its corresponding metadata
    *
    * @param metadata - Metadata about the layout to be saved
    * @param layout   - Full JSON representation of the layout to be saved
    *
-   * @returns ID assigned to the saved layout
+   * @returns Unique identifier assigned to the saved layout
    */
   createLayout: (metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => string;
 
   /**
-   * Overwrites an existing layout with a new one
+   * Overwrites an existing layout and its corresponding metadata with the provided infromation
    *
    * @param id       - Unique identifier of the existing layout to be updated
    * @param metadata - Metadata describing the new layout to overwrite with
@@ -22,7 +22,7 @@ export interface LayoutPersistenceManager {
   updateLayout: (id: string, metadata: Omit<LayoutMetadata, "id">, layout: LayoutJSON) => void;
 
   /**
-   * Deletes an existing layout
+   * Deletes an existing layout and its corresponding metadata
    *
    * @param id - Unique identifier of the existing layout to be deleted
    */
@@ -33,7 +33,7 @@ export interface LayoutPersistenceManager {
    *
    * @param id - Unique identifier of the existing layout to be retrieved
    *
-   * @returns the layout corresponding to provided metadata
+   * @returns Full JSON representation of the layout corresponding to the provided ID
    */
   loadLayout: (id: string) => LayoutJSON;
 
