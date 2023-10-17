@@ -20,6 +20,10 @@ public class LayoutService {
         return layoutRepository.findById(id).orElseThrow();
     }
 
+    public Layout getLayoutByMetadataId(UUID id) {
+        return layoutRepository.findLayoutByMetadataId(id);
+    }
+
     public List<Metadata> getMetadata() {
         return metadataService.getMetadata();
     }

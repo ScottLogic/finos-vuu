@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface LayoutRepository extends CrudRepository<Layout, UUID> {}
+public interface LayoutRepository extends CrudRepository<Layout, UUID> {
+
+    Layout findLayoutByMetadataId(UUID id);
+}
