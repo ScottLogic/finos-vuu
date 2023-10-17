@@ -34,6 +34,7 @@ public class LayoutController {
      * @param id ID of the layout to get
      * @return the layout
      */
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public LayoutResponseDTO getLayout(@PathVariable UUID id) {
         return mapper.map(layoutService.getLayout(id), LayoutResponseDTO.class);
@@ -44,6 +45,7 @@ public class LayoutController {
      *
      * @return the metadata
      */
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/metadata")
     public List<MetadataResponseDTO> getMetadata() {
 
