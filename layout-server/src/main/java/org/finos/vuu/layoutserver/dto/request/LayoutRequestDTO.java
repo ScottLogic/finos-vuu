@@ -6,7 +6,7 @@ import lombok.Data;
 public class LayoutRequestDTO {
 
     /**
-     * The definition of the layout as a string (e.g. stringified JSON structure containing components)
+     * The definition of the layout as a string (i.e. stringified JSON structure containing components)
      */
     private String definition;
 
