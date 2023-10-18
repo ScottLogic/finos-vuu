@@ -8,6 +8,7 @@ import org.finos.vuu.layoutserver.dto.response.LayoutResponseDTO;
 import org.finos.vuu.layoutserver.dto.response.MetadataResponseDTO;
 import org.finos.vuu.layoutserver.model.Layout;
 import org.finos.vuu.layoutserver.service.LayoutService;
+import org.finos.vuu.layoutserver.service.MetadataService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LayoutController {
 
     private final LayoutService layoutService;
+    private final MetadataService metadataService;
     private final ModelMapper mapper;
 
     /**
@@ -49,7 +51,7 @@ public class LayoutController {
     @GetMapping("/metadata")
     public List<MetadataResponseDTO> getMetadata() {
 
-        return layoutService.getMetadata()
+        return metadataService.getMetadata()
             .stream()
             .map(metadata -> mapper.map(metadata, MetadataResponseDTO.class))
             .collect(java.util.stream.Collectors.toList());

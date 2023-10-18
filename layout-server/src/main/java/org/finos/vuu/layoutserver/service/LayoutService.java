@@ -1,7 +1,6 @@
 package org.finos.vuu.layoutserver.service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.finos.vuu.layoutserver.model.Layout;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class LayoutService {
 
     private final LayoutRepository layoutRepository;
-    private final MetadataService metadataService;
 
     public Layout getLayout(UUID id) {
         return layoutRepository.findById(id).orElseThrow();
@@ -22,10 +20,6 @@ public class LayoutService {
 
     public Layout getLayoutByMetadataId(UUID id) {
         return layoutRepository.findLayoutByMetadataId(id);
-    }
-
-    public List<Metadata> getMetadata() {
-        return metadataService.getMetadata();
     }
 
     public UUID createLayout(Layout layout) {
