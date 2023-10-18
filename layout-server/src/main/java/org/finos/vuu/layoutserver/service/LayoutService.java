@@ -34,14 +34,18 @@ public class LayoutService {
 
     public void updateLayout(UUID layoutId, Layout newLayout) {
         Layout layoutToUpdate = getLayout(layoutId);
-        layoutToUpdate.setDefinition(newLayout.getDefinition());
+        Metadata newMetadata = newLayout.getMetadata();
 
-        Metadata metadataToUpdate = layoutToUpdate.getMetadata();
-        metadataToUpdate.setName(newLayout.getMetadata().getName());
-        metadataToUpdate.setGroup(newLayout.getMetadata().getGroup());
-        metadataToUpdate.setScreenshot(newLayout.getMetadata().getScreenshot());
-        metadataToUpdate.setUser(newLayout.getMetadata().getUser());
-        metadataToUpdate.setUpdated(new Date());
+        Metadata updatedMetadata = Metadata.builder()
+            .name(newMetadata.getName())
+            .group(newMetadata.getGroup())
+            .screenshot(newMetadata.getScreenshot())
+            .user(newMetadata.getUser())
+            .updated(new Date())
+            .build();
+
+        layoutToUpdate.setDefinition(newLayout.getDefinition());
+        layoutToUpdate.setMetadata(updatedMetadata);
 
         layoutRepository.save(layoutToUpdate);
     }
