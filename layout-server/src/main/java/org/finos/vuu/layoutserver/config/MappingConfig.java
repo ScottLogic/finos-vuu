@@ -25,34 +25,19 @@ public class MappingConfig {
             .addMappings(m -> m.skip(Layout::setId));
 
         mapper.typeMap(Metadata.class, MetadataResponseDTO.class)
-            .addMappings(
-                m -> m.map(metadata ->
-                        layoutService.getLayoutByMetadataId(metadata.getId()),
-                    MetadataResponseDTO::setLayoutId));
+            .addMappings(m -> m.map(
+                metadata -> layoutService.getLayoutByMetadataId(metadata.getId()),
+                MetadataResponseDTO::setLayoutId));
 
         mapper.typeMap(MetadataRequestDTO.class, Metadata.class)
-            .addMappings(m -> {
-                m.map(metadataRequest -> metadataRequest.getBaseMetadata().getName(),
-                    Metadata::setName);
-                m.map(metadataRequest -> metadataRequest.getBaseMetadata().getGroup(),
-                    Metadata::setGroup);
-                m.map(metadataRequest -> metadataRequest.getBaseMetadata().getScreenshot(),
-                    Metadata::setScreenshot);
-                m.map(metadataRequest -> metadataRequest.getBaseMetadata().getUser(),
-                    Metadata::setUser);
-            });
+            .addMappings(m -> m.map(
+                MetadataRequestDTO::getBaseMetadata,
+                Metadata::setBaseMetadata));
 
         mapper.typeMap(Metadata.class, MetadataResponseDTO.class)
-            .addMappings(m -> {
-                m.map(Metadata::getName,
-                    (dest, value) -> dest.getBaseMetadata().setName((String) value));
-                m.map(Metadata::getGroup,
-                    (dest, value) -> dest.getBaseMetadata().setGroup((String) value));
-                m.map(Metadata::getScreenshot,
-                    (dest, value) -> dest.getBaseMetadata().setScreenshot((String) value));
-                m.map(Metadata::getUser,
-                    (dest, value) -> dest.getBaseMetadata().setUser((String) value));
-            });
+            .addMappings(m -> m.map(
+                Metadata::getBaseMetadata,
+                MetadataResponseDTO::setBaseMetadata));
 
         return mapper;
     }

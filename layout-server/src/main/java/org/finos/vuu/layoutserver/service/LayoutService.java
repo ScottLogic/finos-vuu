@@ -31,10 +31,7 @@ public class LayoutService {
         Metadata newMetadata = newLayout.getMetadata();
 
         Metadata updatedMetadata = Metadata.builder()
-            .name(newMetadata.getName())
-            .group(newMetadata.getGroup())
-            .screenshot(newMetadata.getScreenshot())
-            .user(newMetadata.getUser())
+            .baseMetadata(newMetadata.getBaseMetadata())
             .updated(new Date())
             .build();
 

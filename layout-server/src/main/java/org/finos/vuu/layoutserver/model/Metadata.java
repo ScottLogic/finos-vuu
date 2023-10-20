@@ -3,11 +3,11 @@ package org.finos.vuu.layoutserver.model;
 import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,14 +25,8 @@ public class Metadata {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    private String name;
-
-    private String group;
-
-    @Lob
-    private String screenshot;
-
-    private String user;
+    @Embedded
+    private BaseMetadata baseMetadata;
 
     private Date created = new Date();
 
