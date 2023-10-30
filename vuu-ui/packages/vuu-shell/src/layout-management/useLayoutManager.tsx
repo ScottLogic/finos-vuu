@@ -16,21 +16,21 @@ import { defaultLayout } from "@finos/vuu-layout/";
 
 const local = process.env.LOCAL ?? true;
 
-const persistenceManager = local ? new LocalLayoutPersistenceManager() : new RemoteLayoutPersistenceManager();
+const persistenceManager = local ?new LocalLayoutPersistenceManager();
 
 export const LayoutManagementContext = React.createContext<{
-  layoutMetadata: LayoutMetadata[],
-  saveLayout: (n: LayoutMetadataDto) => void,
-  applicationLayout: LayoutJSON,
-  saveApplicationLayout: (layout: LayoutJSON) => void,
-  loadLayoutById: (id: string) => void
+  layoutMetadata: LayoutMetadata[];
+  saveLayout: (n: LayoutMetadataDto) => void;
+  applicationLayout: LayoutJSON;
+  saveApplicationLayout: (layout: LayoutJSON) => void;
+  loadLayoutById: (id: string) => void;
 }>({
   layoutMetadata: [],
   saveLayout: () => null,
   applicationLayout: defaultLayout,
   saveApplicationLayout: () => null,
-  loadLayoutById: () => defaultLayout
-})
+  loadLayoutById: () => defaultLayout,
+});
 
 type LayoutManagementProviderProps = {
   children: JSX.Element | JSX.Element[];
@@ -62,11 +62,11 @@ export const LayoutManagementProvider = (
     persistenceManager.loadApplicationLayout().then((layout) => {
       setApplicationLayout(layout);
     })
-      .catch((error: Error) => {
-        //TODO: Show error toaster
-        console.error("Error occurred while retrieving metadata", error)
-      })
-  }, [setApplicationLayout])
+    .catch((error: Error) => {
+      //TODO: Show error toaster
+      console.error("Error occurred while retrieving metadata", error)
+    })
+  }, [setApplicationLayout]);
 
   const saveApplicationLayout = useCallback(
     (layout: LayoutJSON) => {
@@ -77,14 +77,17 @@ export const LayoutManagementProvider = (
   );
 
   const saveLayout = useCallback((metadata:LayoutMetadataDto) => {
-
-    const layoutToSave = resolveJSONPath(applicationLayoutRef.current, "#main-tabs.ACTIVE_CHILD");
+    const layoutToSave = resolveJSONPath(
+      applicationLayoutRef.current,
+      "#main-tabs.ACTIVE_CHILD"
+    );
 
     if (layoutToSave) {
-      persistenceManager.createLayout(metadata, layoutToSave).then((metadata) => {
-        setLayoutMetadata(prev => [...prev, metadata]);
-        //TODO: Show success toast
-      }).catch((error: Error) => {
+      persistenceManager
+        .createLayout(metadata, layoutToSave)
+        .then((metadata) => {
+          setLayoutMetadata(prev => [...prev, metadata]);
+        }).catch((error: Error) => {
         //TODO: Show error toaster
         console.error("Error occurred while saving layout", error)
       })
