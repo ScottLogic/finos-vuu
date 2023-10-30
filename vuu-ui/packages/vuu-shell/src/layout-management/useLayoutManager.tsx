@@ -1,9 +1,9 @@
 import React, {
-  useState,
   useCallback,
   useContext,
   useEffect,
   useRef,
+  useState,
 } from "react";
 import {
   LayoutJSON,
@@ -16,7 +16,9 @@ import { defaultLayout } from "@finos/vuu-layout/";
 
 const local = process.env.LOCAL ?? true;
 
-const persistenceManager = local ?new LocalLayoutPersistenceManager();
+const persistenceManager = local
+  ? new LocalLayoutPersistenceManager()
+  : new RemoteLayoutPersistenceManager();
 
 export const LayoutManagementContext = React.createContext<{
   layoutMetadata: LayoutMetadata[];
@@ -59,13 +61,15 @@ export const LayoutManagementProvider = (
     persistenceManager.loadMetadata().then((metadata) => {
       setLayoutMetadata(metadata);
     });
-    persistenceManager.loadApplicationLayout().then((layout) => {
-      setApplicationLayout(layout);
-    })
-    .catch((error: Error) => {
-      //TODO: Show error toaster
-      console.error("Error occurred while retrieving metadata", error)
-    })
+    persistenceManager
+      .loadApplicationLayout()
+      .then((layout) => {
+        setApplicationLayout(layout);
+      })
+      .catch((error: Error) => {
+        //TODO: Show error toaster
+        console.error("Error occurred while retrieving metadata", error);
+      });
   }, [setApplicationLayout]);
 
   const saveApplicationLayout = useCallback(
@@ -76,7 +80,7 @@ export const LayoutManagementProvider = (
     [setApplicationLayout]
   );
 
-  const saveLayout = useCallback((metadata:LayoutMetadataDto) => {
+  const saveLayout = useCallback((metadata: LayoutMetadataDto) => {
     const layoutToSave = resolveJSONPath(
       applicationLayoutRef.current,
       "#main-tabs.ACTIVE_CHILD"
@@ -86,11 +90,13 @@ export const LayoutManagementProvider = (
       persistenceManager
         .createLayout(metadata, layoutToSave)
         .then((metadata) => {
-          setLayoutMetadata(prev => [...prev, metadata]);
-        }).catch((error: Error) => {
-        //TODO: Show error toaster
-        console.error("Error occurred while saving layout", error)
-      })
+          //TODO: Show success toast
+          setLayoutMetadata((prev) => [...prev, metadata]);
+        })
+        .catch((error: Error) => {
+          //TODO: Show error toaster
+          console.error("Error occurred while saving layout", error);
+        });
     }
     //TODO else{ show error message}
   }, []);

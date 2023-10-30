@@ -4,8 +4,6 @@ import {
   LayoutMetadataDto,
   WithId,
 } from "@finos/vuu-shell";
-
-import { Layout, LayoutMetadata, WithId } from "@finos/vuu-shell";
 import { LayoutJSON, LayoutPersistenceManager } from "@finos/vuu-layout";
 import { getLocalEntity, saveLocalEntity } from "@finos/vuu-filters";
 import { formatDate, getUniqueId } from "@finos/vuu-utils";
