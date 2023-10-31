@@ -199,6 +199,7 @@ public class LayoutIntegrationTest {
                 "[metadata: Metadata must not be null]"));
 
         assertThat(layoutRepository.findAll()).isEmpty();
+        assertThat(metadataRepository.findAll()).isEmpty();
     }
 
     @Test
