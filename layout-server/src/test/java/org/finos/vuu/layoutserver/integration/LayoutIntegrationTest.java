@@ -168,7 +168,41 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void createLayout_invalidLayout_returns400() throws Exception {
+    void createLayout_invalidRequestBodyDefinitionsIsBlank_returns400AndDoesNotCreateLayout()
+        throws Exception {
+        LayoutRequestDTO layoutRequest = createValidLayoutRequest();
+        layoutRequest.setDefinition("");
+
+        mockMvc.perform(post("/layouts")
+                .content(objectMapper.writeValueAsString(layoutRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(
+                "[definition: Definition must not be blank]"));
+
+        assertThat(layoutRepository.findAll()).isEmpty();
+        assertThat(metadataRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    void createLayout_invalidRequestBodyMetadataIsNull_returns400AndDoesNotCreateLayout() throws Exception {
+        LayoutRequestDTO layoutRequest = createValidLayoutRequest();
+        layoutRequest.setMetadata(null);
+
+        mockMvc.perform(post("/layouts")
+                .content(objectMapper.writeValueAsString(layoutRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content().string(
+                "[metadata: Metadata must not be null]"));
+
+        assertThat(layoutRepository.findAll()).isEmpty();
+        assertThat(metadataRepository.findAll()).isEmpty();
+    }
+
+
+    @Test
+    void createLayout_invalidRequestBodyUnexpectedFormat_returns400() throws Exception {
         String invalidLayout = "invalidLayout";
 
         mockMvc.perform(post("/layouts")
@@ -183,23 +217,6 @@ public class LayoutIntegrationTest {
                     + "or token 'null', 'true' or 'false')\n"
                     + " at [Source: (org.springframework.util.StreamUtils$NonClosingInputStream);"
                     + " line: 1, column: 14]"));
-    }
-
-    @Test
-    void createLayout_validLayoutButInvalidMetadata_returns400AndDoesNotCreateLayout()
-        throws Exception {
-        LayoutRequestDTO layoutRequest = createValidLayoutRequest();
-        layoutRequest.setMetadata(null);
-
-        mockMvc.perform(post("/layouts")
-                .content(objectMapper.writeValueAsString(layoutRequest))
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest())
-            .andExpect(content().string(
-                "[metadata: Metadata must not be null]"));
-
-        assertThat(layoutRepository.findAll()).isEmpty();
-        assertThat(metadataRepository.findAll()).isEmpty();
     }
 
     @Test
