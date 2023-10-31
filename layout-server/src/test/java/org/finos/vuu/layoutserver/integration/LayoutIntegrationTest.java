@@ -202,7 +202,7 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void updateLayout_validIDAndValidRequest_returns204AndLayoutHasChanged() throws Exception {
+    void updateLayout_validIdAndValidRequest_returns204AndLayoutHasChanged() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
 
@@ -299,7 +299,7 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void deleteLayout_validIDLayoutExists_returnsSuccessAndLayoutIsDeleted() throws Exception {
+    void deleteLayout_validIdLayoutExists_returnsSuccessAndLayoutIsDeleted() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
 
         mockMvc.perform(get("/layouts/{id}", layout.getId())).andExpect(status().isOk());
@@ -310,7 +310,7 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void deleteLayout_validIDLayoutDoesNotExist_returnsNotFound() throws Exception {
+    void deleteLayout_validIdLayoutDoesNotExist_returnsNotFound() throws Exception {
         UUID layoutID = UUID.randomUUID();
 
         mockMvc.perform(delete("/layouts/{id}", layoutID)).andExpect(status().isNotFound());
