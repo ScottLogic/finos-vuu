@@ -149,7 +149,7 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void createLayout_validLayout_returnsCreatedLayoutAndLayoutIsPersisted()
+    void createLayout_validRequest_returnsCreatedLayoutAndLayoutIsPersisted()
         throws Exception {
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
 
