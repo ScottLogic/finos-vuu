@@ -137,7 +137,7 @@ class LayoutControllerTest {
     }
 
     @Test
-    void updateLayout_callsLayoutService() {
+    void updateLayout_validLayout_callsLayoutService() {
         layout.setId(null);
         layout.getMetadata().setId(null);
 
@@ -149,7 +149,7 @@ class LayoutControllerTest {
     }
 
     @Test
-    void deleteLayout_callsLayoutService() {
+    void deleteLayout__validId_callsLayoutService() {
         layoutController.deleteLayout(VALID_LAYOUT_ID);
 
         verify(layoutService).deleteLayout(VALID_LAYOUT_ID);
