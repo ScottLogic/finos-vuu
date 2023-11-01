@@ -1,8 +1,6 @@
 package org.finos.vuu.layoutserver.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -57,8 +55,7 @@ public class LayoutIntegrationTest {
     @Test
     void getLayout_validIDAndLayoutExists_returns200WithLayout() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
         mockMvc.perform(get("/layouts/{id}", layout.getId()))
             .andExpect(status().isOk())
@@ -96,8 +93,7 @@ public class LayoutIntegrationTest {
     @Test
     void getMetadata_singleMetadataExists_returnsMetadata() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
         mockMvc.perform(get("/layouts/metadata"))
             .andExpect(status().isOk())
@@ -116,10 +112,8 @@ public class LayoutIntegrationTest {
         Layout layout1 = createDefaultLayoutInDatabase();
         Layout layout2 = createDefaultLayoutInDatabase();
 
-        assertThat(layoutRepository.findById(layout1.getId()).orElseThrow())
-            .isEqualTo(layout1);
-        assertThat(layoutRepository.findById(layout2.getId()).orElseThrow())
-            .isEqualTo(layout2);
+        assertThat(layoutRepository.findById(layout1.getId()).orElseThrow()).isEqualTo(layout1);
+        assertThat(layoutRepository.findById(layout2.getId()).orElseThrow()).isEqualTo(layout2);
 
         mockMvc.perform(get("/layouts/metadata"))
             .andExpect(status().isOk())
@@ -248,8 +242,8 @@ public class LayoutIntegrationTest {
     @Test
     void updateLayout_validIdAndValidRequest_returns204AndLayoutHasChanged() throws Exception {
         Layout initialLayout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(initialLayout.getId()).orElseThrow())
-            .isEqualTo(initialLayout);
+        assertThat(layoutRepository.findById(initialLayout.getId()).orElseThrow()).isEqualTo(
+            initialLayout);
 
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
 
@@ -276,27 +270,43 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void updateLayout_invalidRequestBodyDefinitionIsBlankAndMetadataIsNull_returns400AndLayoutDoesNotChange()
+    void updateLayout_invalidRequestBodyDefinitionIsBlank_returns400AndLayoutDoesNotChange()
         throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
         LayoutRequestDTO request = new LayoutRequestDTO();
         request.setDefinition("");
+
+        mockMvc.perform(put("/layouts/{id}", layout.getId())
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isBadRequest())
+            .andExpect(content()
+                .string(
+                    "[definition: Definition must not be blank, metadata: Metadata must not be "
+                        + "null]"));
+
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
+    }
+
+    @Test
+    void updateLayout_invalidRequestBodyMetadataIsNull_returns400AndLayoutDoesNotChange()
+        throws Exception {
+        Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
+
+        LayoutRequestDTO request = new LayoutRequestDTO();
         request.setMetadata(null);
 
         mockMvc.perform(put("/layouts/{id}", layout.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content().string(anyOf(
-                equalTo(
-                    "[definition: Definition must not be blank, metadata: Metadata must not be "
-                        + "null]"),
-                equalTo(
+            .andExpect(content()
+                .string(
                     "[metadata: Metadata must not be null, definition: Definition must not be "
-                        + "blank]"))));
+                        + "blank]"));
 
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
     }
@@ -305,8 +315,7 @@ public class LayoutIntegrationTest {
     void updateLayout_invalidRequestBodyUnexpectedFormat_returns400AndLayoutDoesNotChange()
         throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
         String request = "invalidRequest";
 
@@ -359,8 +368,7 @@ public class LayoutIntegrationTest {
     @Test
     void deleteLayout_validIdLayoutExists_returnsSuccessAndLayoutIsDeleted() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
         mockMvc.perform(delete("/layouts/{id}", layout.getId())).andExpect(status().isNoContent());
 
