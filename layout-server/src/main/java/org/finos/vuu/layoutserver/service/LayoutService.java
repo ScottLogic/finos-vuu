@@ -1,9 +1,8 @@
 package org.finos.vuu.layoutserver.service;
 
 import java.util.Date;
-import java.util.UUID;
-import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.finos.vuu.layoutserver.model.Layout;
 import org.finos.vuu.layoutserver.model.Metadata;
@@ -24,10 +23,6 @@ public class LayoutService {
 
     public Layout getLayoutByMetadataId(UUID id) {
         return layoutRepository.findLayoutByMetadataId(id);
-    }
-
-    public List<Metadata> getMetadata() {
-        return metadataService.getMetadata();
     }
 
     public UUID createLayout(Layout layout) {

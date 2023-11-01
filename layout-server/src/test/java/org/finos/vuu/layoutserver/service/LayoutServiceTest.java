@@ -6,7 +6,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,14 +26,10 @@ class LayoutServiceTest {
     @Mock
     private LayoutRepository layoutRepository;
 
-    @Mock
-    private MetadataService metadataService;
-
     @InjectMocks
     private LayoutService layoutService;
 
     private Layout layout;
-    private Metadata metadata;
     private UUID layoutId;
 
     @BeforeEach
@@ -42,7 +37,7 @@ class LayoutServiceTest {
         layoutId = UUID.randomUUID();
         UUID metadataId = UUID.randomUUID();
         BaseMetadata baseMetadata = new BaseMetadata();
-        metadata = new Metadata();
+        Metadata metadata = new Metadata();
         layout = new Layout();
 
         baseMetadata.setName("Test Name");
@@ -66,21 +61,14 @@ class LayoutServiceTest {
     }
 
     @Test
-    void getMetadata_returnsMetadata() {
-        when(metadataService.getMetadata()).thenReturn(List.of(metadata));
-
-        assertThat(layoutService.getMetadata()).isEqualTo(List.of(metadata));
-    }
-
-    @Test
-    void createLayout() {
+    void createLayout_anyLayout_returnsLayoutId() {
         when(layoutRepository.save(layout)).thenReturn(layout);
 
         assertThat(layoutService.createLayout(layout)).isEqualTo(layoutId);
     }
 
     @Test
-    void updateLayout_layoutExists_callsRepository() {
+    void updateLayout_layoutExists_callsRepositorySave() {
         when(layoutRepository.findById(layoutId)).thenReturn(Optional.of(layout));
 
         layoutService.updateLayout(layoutId, layout);
@@ -97,7 +85,7 @@ class LayoutServiceTest {
     }
 
     @Test
-    void deleteLayout_callsRepository() {
+    void deleteLayout_anyUUID_callsRepositoryDeleteById() {
         layoutService.deleteLayout(layoutId);
 
         verify(layoutRepository, times(1)).deleteById(layoutId);
