@@ -20,6 +20,7 @@ import org.finos.vuu.layoutserver.model.Layout;
 import org.finos.vuu.layoutserver.model.Metadata;
 import org.finos.vuu.layoutserver.repository.LayoutRepository;
 import org.finos.vuu.layoutserver.repository.MetadataRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,11 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @ActiveProfiles("test")
 public class LayoutIntegrationTest {
 
@@ -51,6 +50,11 @@ public class LayoutIntegrationTest {
     @Autowired
     private MetadataRepository metadataRepository;
 
+    @BeforeEach
+    void tearDown() {
+        layoutRepository.deleteAll();
+        metadataRepository.deleteAll();
+    }
 
     @Test
     void getLayout_validIDAndLayoutExists_returns200WithLayout() throws Exception {
@@ -246,6 +250,11 @@ public class LayoutIntegrationTest {
             initialLayout);
 
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
+        layoutRequest.setDefinition("Updated definition");
+        layoutRequest.getMetadata().getBaseMetadata().setName("Updated name");
+        layoutRequest.getMetadata().getBaseMetadata().setGroup("Updated group");
+        layoutRequest.getMetadata().getBaseMetadata().setScreenshot("Updated screenshot");
+        layoutRequest.getMetadata().getBaseMetadata().setUser("Updated user");
 
         mockMvc.perform(put("/layouts/{id}", initialLayout.getId())
                 .content(objectMapper.writeValueAsString(layoutRequest))
@@ -275,17 +284,14 @@ public class LayoutIntegrationTest {
         Layout layout = createDefaultLayoutInDatabase();
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
-        LayoutRequestDTO request = new LayoutRequestDTO();
+        LayoutRequestDTO request = createValidLayoutRequest();
         request.setDefinition("");
 
         mockMvc.perform(put("/layouts/{id}", layout.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content()
-                .string(
-                    "[definition: Definition must not be blank, metadata: Metadata must not be "
-                        + "null]"));
+            .andExpect(content().string("[definition: Definition must not be blank]"));
 
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
     }
@@ -296,17 +302,14 @@ public class LayoutIntegrationTest {
         Layout layout = createDefaultLayoutInDatabase();
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
 
-        LayoutRequestDTO request = new LayoutRequestDTO();
+        LayoutRequestDTO request = createValidLayoutRequest();
         request.setMetadata(null);
 
         mockMvc.perform(put("/layouts/{id}", layout.getId())
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
-            .andExpect(content()
-                .string(
-                    "[metadata: Metadata must not be null, definition: Definition must not be "
-                        + "blank]"));
+            .andExpect(content().string("[metadata: Metadata must not be null]"));
 
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
     }
@@ -409,10 +412,7 @@ public class LayoutIntegrationTest {
         layout.setDefinition(DEFAULT_LAYOUT_DEFINITION);
         layout.setMetadata(metadata);
 
-        metadataRepository.save(metadata);
-        layoutRepository.save(layout);
-
-        return layout;
+        return layoutRepository.save(layout);
     }
 
     private LayoutRequestDTO createValidLayoutRequest() {
