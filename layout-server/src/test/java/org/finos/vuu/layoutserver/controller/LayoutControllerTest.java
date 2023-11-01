@@ -100,9 +100,10 @@ class LayoutControllerTest {
     }
 
     @Test
-    void getLayout_layoutDoesNotExist_throwsNotFoundAndReturns404() {
-        when(layoutService.getLayout(DOES_NOT_EXIST_LAYOUT_ID)).thenThrow(
-            NoSuchElementException.class);
+    void getLayout_layoutDoesNotExist_throwsNoSuchElementException() {
+        when(layoutService.getLayout(DOES_NOT_EXIST_LAYOUT_ID))
+            .thenThrow(NoSuchElementException.class);
+        
         assertThrows(NoSuchElementException.class,
             () -> layoutController.getLayout(DOES_NOT_EXIST_LAYOUT_ID));
     }
@@ -110,8 +111,8 @@ class LayoutControllerTest {
     @Test
     void getMetadata_metadataExists_returnsMetadata() {
         when(metadataService.getMetadata()).thenReturn(List.of(metadata));
-        when(modelMapper.map(metadata, MetadataResponseDTO.class)).thenReturn(
-            getMetadataResponseDTO());
+        when(modelMapper.map(metadata, MetadataResponseDTO.class))
+            .thenReturn(getMetadataResponseDTO());
 
         assertThat(layoutController.getMetadata()).isEqualTo(expectedMetadataResponse);
     }
