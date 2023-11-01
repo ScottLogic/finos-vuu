@@ -23,6 +23,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class LayoutServiceTest {
 
+    private static final UUID LAYOUT_ID = UUID.randomUUID();
+    public static final UUID METADATA_ID = UUID.randomUUID();
+
     @Mock
     private LayoutRepository layoutRepository;
 
@@ -30,12 +33,9 @@ class LayoutServiceTest {
     private LayoutService layoutService;
 
     private Layout layout;
-    private UUID layoutId;
 
     @BeforeEach
     public void setup() {
-        layoutId = UUID.randomUUID();
-        UUID metadataId = UUID.randomUUID();
         BaseMetadata baseMetadata = new BaseMetadata();
         Metadata metadata = new Metadata();
         layout = new Layout();
@@ -45,49 +45,49 @@ class LayoutServiceTest {
         baseMetadata.setScreenshot("Test Screenshot");
         baseMetadata.setUser("Test User");
 
-        metadata.setId(metadataId);
+        metadata.setId(METADATA_ID);
         metadata.setBaseMetadata(baseMetadata);
 
-        layout.setId(layoutId);
+        layout.setId(LAYOUT_ID);
         layout.setDefinition("");
         layout.setMetadata(metadata);
     }
 
     @Test
     void getLayout_returnsLayout() {
-        when(layoutRepository.findById(layoutId)).thenReturn(Optional.of(layout));
+        when(layoutRepository.findById(LAYOUT_ID)).thenReturn(Optional.of(layout));
 
-        assertThat(layoutService.getLayout(layoutId)).isEqualTo(layout);
+        assertThat(layoutService.getLayout(LAYOUT_ID)).isEqualTo(layout);
     }
 
     @Test
     void createLayout_anyLayout_returnsLayoutId() {
         when(layoutRepository.save(layout)).thenReturn(layout);
 
-        assertThat(layoutService.createLayout(layout)).isEqualTo(layoutId);
+        assertThat(layoutService.createLayout(layout)).isEqualTo(LAYOUT_ID);
     }
 
     @Test
     void updateLayout_layoutExists_callsRepositorySave() {
-        when(layoutRepository.findById(layoutId)).thenReturn(Optional.of(layout));
+        when(layoutRepository.findById(LAYOUT_ID)).thenReturn(Optional.of(layout));
 
-        layoutService.updateLayout(layoutId, layout);
+        layoutService.updateLayout(LAYOUT_ID, layout);
 
         verify(layoutRepository, times(1)).save(layout);
     }
 
     @Test
     void updateLayout_layoutDoesNotExist_throwsNoSuchElementException() {
-        when(layoutRepository.findById(layoutId)).thenReturn(Optional.empty());
+        when(layoutRepository.findById(LAYOUT_ID)).thenReturn(Optional.empty());
 
         assertThrows(NoSuchElementException.class,
-            () -> layoutService.updateLayout(layoutId, layout));
+            () -> layoutService.updateLayout(LAYOUT_ID, layout));
     }
 
     @Test
     void deleteLayout_anyUUID_callsRepositoryDeleteById() {
-        layoutService.deleteLayout(layoutId);
+        layoutService.deleteLayout(LAYOUT_ID);
 
-        verify(layoutRepository, times(1)).deleteById(layoutId);
+        verify(layoutRepository, times(1)).deleteById(LAYOUT_ID);
     }
 }

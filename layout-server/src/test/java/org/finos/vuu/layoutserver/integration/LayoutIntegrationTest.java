@@ -22,7 +22,6 @@ import org.finos.vuu.layoutserver.model.Layout;
 import org.finos.vuu.layoutserver.model.Metadata;
 import org.finos.vuu.layoutserver.repository.LayoutRepository;
 import org.finos.vuu.layoutserver.repository.MetadataRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,11 +38,11 @@ import org.springframework.transaction.annotation.Transactional;
 @ActiveProfiles("test")
 public class LayoutIntegrationTest {
 
-    private static String defaultDefinition;
-    private static String defaultName;
-    private static String defaultGroup;
-    private static String defaultScreenshot;
-    private static String defaultUser;
+    private static final String DEFAULT_LAYOUT_DEFINITION = "Default layout definition";
+    private static final String DEFAULT_LAYOUT_NAME = "Default layout name";
+    private static final String DEFAULT_LAYOUT_GROUP = "Default layout group";
+    private static final String DEFAULT_LAYOUT_SCREENSHOT = "Default layout screenshot";
+    private static final String DEFAULT_LAYOUT_USER = "Default layout user";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -54,14 +53,6 @@ public class LayoutIntegrationTest {
     @Autowired
     private MetadataRepository metadataRepository;
 
-    @BeforeAll
-    public static void setup() {
-        defaultDefinition = "Default layout definition";
-        defaultName = "Default layout name";
-        defaultGroup = "Default layout group";
-        defaultScreenshot = "Default layout screenshot";
-        defaultUser = "Default layout user";
-    }
 
     @Test
     void getLayout_validIDAndLayoutExists_returns200WithLayout() throws Exception {
@@ -185,7 +176,8 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void createLayout_invalidRequestBodyMetadataIsNull_returns400AndDoesNotCreateLayout() throws Exception {
+    void createLayout_invalidRequestBodyMetadataIsNull_returns400AndDoesNotCreateLayout()
+        throws Exception {
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
         layoutRequest.setMetadata(null);
 
@@ -258,8 +250,12 @@ public class LayoutIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isBadRequest())
             .andExpect(content().string(anyOf(
-                equalTo("[definition: Definition must not be blank, metadata: Metadata must not be null]"),
-                equalTo("[metadata: Metadata must not be null, definition: Definition must not be blank]"))));
+                equalTo(
+                    "[definition: Definition must not be blank, metadata: Metadata must not be "
+                        + "null]"),
+                equalTo(
+                    "[metadata: Metadata must not be null, definition: Definition must not be "
+                        + "blank]"))));
 
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow()).isEqualTo(layout);
     }
@@ -351,14 +347,14 @@ public class LayoutIntegrationTest {
         Metadata metadata = new Metadata();
         BaseMetadata baseMetadata = new BaseMetadata();
 
-        baseMetadata.setName(defaultName);
-        baseMetadata.setGroup(defaultGroup);
-        baseMetadata.setScreenshot(defaultScreenshot);
-        baseMetadata.setUser(defaultUser);
+        baseMetadata.setName(DEFAULT_LAYOUT_NAME);
+        baseMetadata.setGroup(DEFAULT_LAYOUT_GROUP);
+        baseMetadata.setScreenshot(DEFAULT_LAYOUT_SCREENSHOT);
+        baseMetadata.setUser(DEFAULT_LAYOUT_USER);
 
         metadata.setBaseMetadata(baseMetadata);
 
-        layout.setDefinition(defaultDefinition);
+        layout.setDefinition(DEFAULT_LAYOUT_DEFINITION);
         layout.setMetadata(metadata);
 
         metadataRepository.save(metadata);
@@ -372,16 +368,16 @@ public class LayoutIntegrationTest {
 
     private LayoutRequestDTO createValidLayoutRequest() {
         BaseMetadata baseMetadata = new BaseMetadata();
-        baseMetadata.setName(defaultName);
-        baseMetadata.setGroup(defaultGroup);
-        baseMetadata.setScreenshot(defaultScreenshot);
-        baseMetadata.setUser(defaultUser);
+        baseMetadata.setName(DEFAULT_LAYOUT_NAME);
+        baseMetadata.setGroup(DEFAULT_LAYOUT_GROUP);
+        baseMetadata.setScreenshot(DEFAULT_LAYOUT_SCREENSHOT);
+        baseMetadata.setUser(DEFAULT_LAYOUT_USER);
 
         MetadataRequestDTO metadataRequest = new MetadataRequestDTO();
         metadataRequest.setBaseMetadata(baseMetadata);
 
         LayoutRequestDTO layoutRequest = new LayoutRequestDTO();
-        layoutRequest.setDefinition(defaultDefinition);
+        layoutRequest.setDefinition(DEFAULT_LAYOUT_DEFINITION);
         layoutRequest.setMetadata(metadataRequest);
 
         return layoutRequest;

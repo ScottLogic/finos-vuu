@@ -29,6 +29,15 @@ import org.modelmapper.ModelMapper;
 @ExtendWith(MockitoExtension.class)
 class LayoutControllerTest {
 
+    private static final String LAYOUT_DEFINITION = "Test Definition";
+    private static final String LAYOUT_GROUP = "Test Group";
+    private static final String LAYOUT_NAME = "Test Layout";
+    private static final String LAYOUT_SCREENSHOT = "Test Screenshot";
+    private static final String LAYOUT_USER = "Test User";
+    private static final UUID VALID_LAYOUT_ID = UUID.randomUUID();
+    private static final UUID VALID_METADATA_ID = UUID.randomUUID();
+    private static final UUID DOES_NOT_EXIST_LAYOUT_ID = UUID.randomUUID();
+
     @Mock
     private LayoutService layoutService;
 
@@ -41,8 +50,6 @@ class LayoutControllerTest {
     @InjectMocks
     private LayoutController layoutController;
 
-    private UUID validLayoutId;
-    private UUID doesNotExistLayoutId;
     private Layout layout;
     private Metadata metadata;
     private BaseMetadata baseMetadata;
@@ -52,24 +59,19 @@ class LayoutControllerTest {
 
     @BeforeEach
     public void setup() {
-        validLayoutId = UUID.randomUUID();
-        doesNotExistLayoutId = UUID.randomUUID();
-        UUID metadataId = UUID.randomUUID();
-        String layoutDefinition = "Test Definition";
-
         baseMetadata = new BaseMetadata();
-        baseMetadata.setName("Test Layout");
-        baseMetadata.setUser("Test User");
-        baseMetadata.setGroup("Test Group");
-        baseMetadata.setScreenshot("Test Screenshot");
+        baseMetadata.setName(LAYOUT_NAME);
+        baseMetadata.setUser(LAYOUT_USER);
+        baseMetadata.setGroup(LAYOUT_GROUP);
+        baseMetadata.setScreenshot(LAYOUT_SCREENSHOT);
 
         metadata = new Metadata();
-        metadata.setId(metadataId);
+        metadata.setId(VALID_METADATA_ID);
         metadata.setBaseMetadata(baseMetadata);
 
         layout = new Layout();
-        layout.setId(validLayoutId);
-        layout.setDefinition(layoutDefinition);
+        layout.setId(VALID_LAYOUT_ID);
+        layout.setDefinition(LAYOUT_DEFINITION);
         layout.setMetadata(metadata);
 
         layoutRequest = new LayoutRequestDTO();
@@ -92,17 +94,17 @@ class LayoutControllerTest {
 
     @Test
     void getLayout_layoutExists_returnsLayout() {
-        when(layoutService.getLayout(validLayoutId)).thenReturn(layout);
-        when(modelMapper.map(layout, LayoutResponseDTO.class)).thenReturn(
-            expectedLayoutResponse);
-        assertThat(layoutController.getLayout(validLayoutId)).isEqualTo(expectedLayoutResponse);
+        when(layoutService.getLayout(VALID_LAYOUT_ID)).thenReturn(layout);
+        when(modelMapper.map(layout, LayoutResponseDTO.class)).thenReturn(expectedLayoutResponse);
+        assertThat(layoutController.getLayout(VALID_LAYOUT_ID)).isEqualTo(expectedLayoutResponse);
     }
 
     @Test
     void getLayout_layoutDoesNotExist_throwsNotFoundAndReturns404() {
-        when(layoutService.getLayout(doesNotExistLayoutId)).thenThrow(NoSuchElementException.class);
+        when(layoutService.getLayout(DOES_NOT_EXIST_LAYOUT_ID)).thenThrow(
+            NoSuchElementException.class);
         assertThrows(NoSuchElementException.class,
-            () -> layoutController.getLayout(doesNotExistLayoutId));
+            () -> layoutController.getLayout(DOES_NOT_EXIST_LAYOUT_ID));
     }
 
     @Test
@@ -131,8 +133,7 @@ class LayoutControllerTest {
         when(layoutService.getLayout(layout.getId())).thenReturn(layout);
         when(modelMapper.map(layout, LayoutResponseDTO.class)).thenReturn(expectedLayoutResponse);
 
-        assertThat(layoutController.createLayout(layoutRequest))
-            .isEqualTo(expectedLayoutResponse);
+        assertThat(layoutController.createLayout(layoutRequest)).isEqualTo(expectedLayoutResponse);
     }
 
     @Test
@@ -142,16 +143,16 @@ class LayoutControllerTest {
 
         when(modelMapper.map(layoutRequest, Layout.class)).thenReturn(layout);
 
-        layoutController.updateLayout(validLayoutId, layoutRequest);
+        layoutController.updateLayout(VALID_LAYOUT_ID, layoutRequest);
 
-        verify(layoutService).updateLayout(validLayoutId, layout);
+        verify(layoutService).updateLayout(VALID_LAYOUT_ID, layout);
     }
 
     @Test
     void deleteLayout_callsLayoutService() {
-        layoutController.deleteLayout(validLayoutId);
+        layoutController.deleteLayout(VALID_LAYOUT_ID);
 
-        verify(layoutService).deleteLayout(validLayoutId);
+        verify(layoutService).deleteLayout(VALID_LAYOUT_ID);
     }
 
     private MetadataResponseDTO getMetadataResponseDTO() {
