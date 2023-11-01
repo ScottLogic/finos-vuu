@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -55,7 +54,7 @@ class LayoutControllerTest {
     private BaseMetadata baseMetadata;
     private LayoutRequestDTO layoutRequest;
     private LayoutResponseDTO expectedLayoutResponse;
-    private List<MetadataResponseDTO> expectedMetadataResponse;
+    private MetadataResponseDTO metadataResponse;
 
     @BeforeEach
     public void setup() {
@@ -80,15 +79,13 @@ class LayoutControllerTest {
         layoutRequest.setDefinition(layout.getDefinition());
         layoutRequest.setMetadata(metadataRequestDTO);
 
+        metadataResponse = getMetadataResponseDTO();
+
         expectedLayoutResponse = new LayoutResponseDTO();
         expectedLayoutResponse.setId(layout.getId());
         expectedLayoutResponse.setDefinition(layout.getDefinition());
-
-        MetadataResponseDTO metadataResponse = getMetadataResponseDTO();
         expectedLayoutResponse.setMetadata(metadataResponse);
 
-        expectedMetadataResponse = new ArrayList<>();
-        expectedMetadataResponse.add(metadataResponse);
     }
 
 
@@ -103,18 +100,20 @@ class LayoutControllerTest {
     void getLayout_layoutDoesNotExist_throwsNoSuchElementException() {
         when(layoutService.getLayout(DOES_NOT_EXIST_LAYOUT_ID))
             .thenThrow(NoSuchElementException.class);
-        
+
         assertThrows(NoSuchElementException.class,
             () -> layoutController.getLayout(DOES_NOT_EXIST_LAYOUT_ID));
     }
 
     @Test
     void getMetadata_metadataExists_returnsMetadata() {
-        when(metadataService.getMetadata()).thenReturn(List.of(metadata));
-        when(modelMapper.map(metadata, MetadataResponseDTO.class))
-            .thenReturn(getMetadataResponseDTO());
+        List<Metadata> metadataList = List.of(metadata);
 
-        assertThat(layoutController.getMetadata()).isEqualTo(expectedMetadataResponse);
+        when(metadataService.getMetadata()).thenReturn(metadataList);
+        when(modelMapper.map(metadata, MetadataResponseDTO.class))
+            .thenReturn(metadataResponse);
+
+        assertThat(layoutController.getMetadata()).isEqualTo(List.of(metadataResponse));
     }
 
     @Test
