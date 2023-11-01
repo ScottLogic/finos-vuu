@@ -247,19 +247,19 @@ public class LayoutIntegrationTest {
 
     @Test
     void updateLayout_validIdAndValidRequest_returns204AndLayoutHasChanged() throws Exception {
-        Layout layout = createDefaultLayoutInDatabase();
-        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
-            .isEqualTo(layout);
+        Layout initialLayout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(initialLayout.getId()).orElseThrow())
+            .isEqualTo(initialLayout);
 
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
 
-        mockMvc.perform(put("/layouts/{id}", layout.getId())
+        mockMvc.perform(put("/layouts/{id}", initialLayout.getId())
                 .content(objectMapper.writeValueAsString(layoutRequest))
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent())
             .andExpect(jsonPath("$").doesNotExist());
 
-        Layout updatedLayout = layoutRepository.findById(layout.getId()).orElseThrow();
+        Layout updatedLayout = layoutRepository.findById(initialLayout.getId()).orElseThrow();
 
         assertThat(updatedLayout.getDefinition())
             .isEqualTo(layoutRequest.getDefinition());
@@ -271,6 +271,8 @@ public class LayoutIntegrationTest {
             .isEqualTo(layoutRequest.getMetadata().getBaseMetadata().getScreenshot());
         assertThat(updatedLayout.getMetadata().getBaseMetadata().getUser())
             .isEqualTo(layoutRequest.getMetadata().getBaseMetadata().getUser());
+
+        assertThat(updatedLayout).isNotEqualTo(initialLayout);
     }
 
     @Test
