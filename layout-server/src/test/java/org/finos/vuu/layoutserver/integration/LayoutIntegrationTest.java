@@ -57,6 +57,8 @@ public class LayoutIntegrationTest {
     @Test
     void getLayout_validIDAndLayoutExists_returns200WithLayout() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
 
         mockMvc.perform(get("/layouts/{id}", layout.getId()))
             .andExpect(status().isOk())
@@ -94,6 +96,8 @@ public class LayoutIntegrationTest {
     @Test
     void getMetadata_metadataExists_returnsMetadata() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
 
         mockMvc.perform(get("/layouts/metadata"))
             .andExpect(status().isOk())
@@ -214,6 +218,9 @@ public class LayoutIntegrationTest {
     @Test
     void updateLayout_validIdAndValidRequest_returns204AndLayoutHasChanged() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
+
         LayoutRequestDTO layoutRequest = createValidLayoutRequest();
 
         mockMvc.perform(put("/layouts/{id}", layout.getId())
@@ -240,6 +247,8 @@ public class LayoutIntegrationTest {
     void updateLayout_invalidRequestBodyDefinitionIsBlankAndMetadataIsNull_returns400AndLayoutDoesNotChange()
         throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
 
         LayoutRequestDTO request = new LayoutRequestDTO();
         request.setDefinition("");
@@ -264,6 +273,9 @@ public class LayoutIntegrationTest {
     void updateLayout_invalidRequestBodyUnexpectedFormat_returns400AndLayoutDoesNotChange()
         throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
+
         String request = "invalidRequest";
 
         mockMvc.perform(put("/layouts/{id}", layout.getId())
@@ -315,12 +327,12 @@ public class LayoutIntegrationTest {
     @Test
     void deleteLayout_validIdLayoutExists_returnsSuccessAndLayoutIsDeleted() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
-
-        mockMvc.perform(get("/layouts/{id}", layout.getId())).andExpect(status().isOk());
+        assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
+            .isEqualTo(layout);
 
         mockMvc.perform(delete("/layouts/{id}", layout.getId())).andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/layouts/{id}", layout.getId())).andExpect(status().isNotFound());
+        assertThat(layoutRepository.findById(layout.getId())).isEmpty();
     }
 
     @Test
@@ -358,12 +370,9 @@ public class LayoutIntegrationTest {
         layout.setMetadata(metadata);
 
         metadataRepository.save(metadata);
-        Layout createdLayout = layoutRepository.save(layout);
+        layoutRepository.save(layout);
 
-        assertThat(layoutRepository.findById(createdLayout.getId()).orElseThrow())
-            .isEqualTo(layout);
-
-        return createdLayout;
+        return layout;
     }
 
     private LayoutRequestDTO createValidLayoutRequest() {
