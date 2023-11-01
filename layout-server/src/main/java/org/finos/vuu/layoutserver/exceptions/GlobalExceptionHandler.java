@@ -1,4 +1,4 @@
-package org.finos.vuu.layoutserver.controller;
+package org.finos.vuu.layoutserver.exceptions;
 
 import java.util.List;
 import java.util.NoSuchElementException;
