@@ -51,10 +51,18 @@ class LayoutServiceTest {
     }
 
     @Test
-    void getLayout_returnsLayout() {
+    void getLayout_layoutExists_returnsLayout() {
         when(layoutRepository.findById(LAYOUT_ID)).thenReturn(Optional.of(layout));
 
         assertThat(layoutService.getLayout(LAYOUT_ID)).isEqualTo(layout);
+    }
+
+    @Test
+    void getLayout_noLayoutsExist_throwsNotFoundException() {
+        when(layoutRepository.findById(LAYOUT_ID)).thenReturn(Optional.empty());
+
+        assertThrows(NoSuchElementException.class,
+            () -> layoutService.getLayout(LAYOUT_ID));
     }
 
     @Test
