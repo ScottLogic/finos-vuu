@@ -64,9 +64,7 @@ class LayoutControllerTest {
         baseMetadata.setGroup(LAYOUT_GROUP);
         baseMetadata.setScreenshot(LAYOUT_SCREENSHOT);
 
-        metadata = new Metadata();
-        metadata.setId(VALID_METADATA_ID);
-        metadata.setBaseMetadata(baseMetadata);
+        metadata = Metadata.builder().id(VALID_METADATA_ID).baseMetadata(baseMetadata).build();
 
         layout = new Layout();
         layout.setId(VALID_LAYOUT_ID);

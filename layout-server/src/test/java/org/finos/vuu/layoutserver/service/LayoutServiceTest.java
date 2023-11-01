@@ -37,17 +37,14 @@ class LayoutServiceTest {
     @BeforeEach
     public void setup() {
         BaseMetadata baseMetadata = new BaseMetadata();
-        Metadata metadata = new Metadata();
-        layout = new Layout();
-
         baseMetadata.setName("Test Name");
         baseMetadata.setGroup("Test Group");
         baseMetadata.setScreenshot("Test Screenshot");
         baseMetadata.setUser("Test User");
 
-        metadata.setId(METADATA_ID);
-        metadata.setBaseMetadata(baseMetadata);
+        Metadata metadata = Metadata.builder().id(METADATA_ID).baseMetadata(baseMetadata).build();
 
+        layout = new Layout();
         layout.setId(LAYOUT_ID);
         layout.setDefinition("");
         layout.setMetadata(metadata);
