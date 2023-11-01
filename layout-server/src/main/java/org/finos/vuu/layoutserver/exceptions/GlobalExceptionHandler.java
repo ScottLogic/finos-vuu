@@ -15,30 +15,26 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFound(NoSuchElementException ex) {
-        return new ResponseEntity<>(ex.getMessage(), org.springframework.http.HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(ex.getMessage(),
+            org.springframework.http.HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({
+        HttpMessageNotReadableException.class,
+        MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<String> handleBadRequest(Exception ex) {
+        return new ResponseEntity<>(ex.getMessage(),
+            org.springframework.http.HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
-        List<String> errors = ex.getFieldErrors().stream()
+        List<String> errors = ex.getFieldErrors()
+            .stream()
             .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
             .collect(Collectors.toList());
 
         return new ResponseEntity<>(errors.toString(),
-            org.springframework.http.HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleMethodArgumentTypeMismatchException(
-        MethodArgumentTypeMismatchException ex) {
-        return new ResponseEntity<>(ex.getMessage(),
-            org.springframework.http.HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<String> handleHttpMessageNotReadableException(
-        HttpMessageNotReadableException ex) {
-        return new ResponseEntity<>(ex.getMessage(),
             org.springframework.http.HttpStatus.BAD_REQUEST);
     }
 }
