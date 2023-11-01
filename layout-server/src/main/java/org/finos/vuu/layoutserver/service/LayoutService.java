@@ -1,6 +1,6 @@
 package org.finos.vuu.layoutserver.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class LayoutService {
 
     private final LayoutRepository layoutRepository;
-    private final MetadataService metadataService;
 
     public Layout getLayout(UUID id) {
         return layoutRepository.findById(id)
@@ -35,7 +34,7 @@ public class LayoutService {
 
         Metadata updatedMetadata = Metadata.builder()
             .baseMetadata(newMetadata.getBaseMetadata())
-            .updated(new Date())
+            .updated(LocalDate.now())
             .build();
 
         layoutToUpdate.setDefinition(newLayout.getDefinition());
