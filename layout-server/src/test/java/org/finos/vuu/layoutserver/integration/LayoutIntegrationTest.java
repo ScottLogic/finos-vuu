@@ -94,7 +94,7 @@ public class LayoutIntegrationTest {
     }
 
     @Test
-    void getMetadata_metadataExists_returnsMetadata() throws Exception {
+    void getMetadata_singleMetadataExists_returnsMetadata() throws Exception {
         Layout layout = createDefaultLayoutInDatabase();
         assertThat(layoutRepository.findById(layout.getId()).orElseThrow())
             .isEqualTo(layout);
@@ -109,6 +109,36 @@ public class LayoutIntegrationTest {
                 is(layout.getMetadata().getBaseMetadata().getScreenshot())))
             .andExpect(jsonPath("$[0].user",
                 is(layout.getMetadata().getBaseMetadata().getUser())));
+    }
+
+    @Test
+    void getMetadata_multipleMetadataExists_returnsAllMetadata() throws Exception {
+        Layout layout1 = createDefaultLayoutInDatabase();
+        Layout layout2 = createDefaultLayoutInDatabase();
+
+        assertThat(layoutRepository.findById(layout1.getId()).orElseThrow())
+            .isEqualTo(layout1);
+        assertThat(layoutRepository.findById(layout2.getId()).orElseThrow())
+            .isEqualTo(layout2);
+
+        mockMvc.perform(get("/layouts/metadata"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].name",
+                is(layout1.getMetadata().getBaseMetadata().getName())))
+            .andExpect(jsonPath("$[0].group",
+                is(layout1.getMetadata().getBaseMetadata().getGroup())))
+            .andExpect(jsonPath("$[0].screenshot",
+                is(layout1.getMetadata().getBaseMetadata().getScreenshot())))
+            .andExpect(jsonPath("$[0].user",
+                is(layout1.getMetadata().getBaseMetadata().getUser())))
+            .andExpect(jsonPath("$[0].name",
+                is(layout2.getMetadata().getBaseMetadata().getName())))
+            .andExpect(jsonPath("$[0].group",
+                is(layout2.getMetadata().getBaseMetadata().getGroup())))
+            .andExpect(jsonPath("$[0].screenshot",
+                is(layout2.getMetadata().getBaseMetadata().getScreenshot())))
+            .andExpect(jsonPath("$[0].user",
+                is(layout2.getMetadata().getBaseMetadata().getUser())));
     }
 
     @Test
