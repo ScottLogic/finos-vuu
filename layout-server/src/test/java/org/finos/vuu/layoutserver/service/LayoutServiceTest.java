@@ -2,6 +2,7 @@ package org.finos.vuu.layoutserver.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 @ExtendWith(MockitoExtension.class)
 class LayoutServiceTest {
@@ -92,6 +94,17 @@ class LayoutServiceTest {
     @Test
     void deleteLayout_anyUUID_callsRepositoryDeleteById() {
         layoutService.deleteLayout(LAYOUT_ID);
+
+        verify(layoutRepository, times(1)).deleteById(LAYOUT_ID);
+    }
+
+    @Test
+    void deleteLayout_noLayoutExists_throwsNoSuchElementException() {
+        doThrow(new EmptyResultDataAccessException(1))
+            .when(layoutRepository).deleteById(LAYOUT_ID);
+
+        assertThrows(NoSuchElementException.class,
+            () -> layoutService.deleteLayout(LAYOUT_ID));
 
         verify(layoutRepository, times(1)).deleteById(LAYOUT_ID);
     }

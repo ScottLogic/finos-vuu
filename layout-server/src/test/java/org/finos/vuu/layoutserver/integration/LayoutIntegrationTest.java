@@ -115,6 +115,12 @@ public class LayoutIntegrationTest {
     void getMetadata_multipleMetadataExists_returnsAllMetadata() throws Exception {
         Layout layout1 = createDefaultLayoutInDatabase();
         Layout layout2 = createDefaultLayoutInDatabase();
+        layout2.setDefinition("Different definition");
+        layout2.getMetadata().getBaseMetadata().setName("Different name");
+        layout2.getMetadata().getBaseMetadata().setGroup("Different group");
+        layout2.getMetadata().getBaseMetadata().setScreenshot("Different screenshot");
+        layout2.getMetadata().getBaseMetadata().setUser("Different user");
+        layoutRepository.save(layout2);
 
         assertThat(layoutRepository.findById(layout1.getId()).orElseThrow()).isEqualTo(layout1);
         assertThat(layoutRepository.findById(layout2.getId()).orElseThrow()).isEqualTo(layout2);
@@ -129,13 +135,13 @@ public class LayoutIntegrationTest {
                 is(layout1.getMetadata().getBaseMetadata().getScreenshot())))
             .andExpect(jsonPath("$[0].user",
                 is(layout1.getMetadata().getBaseMetadata().getUser())))
-            .andExpect(jsonPath("$[0].name",
+            .andExpect(jsonPath("$[1].name",
                 is(layout2.getMetadata().getBaseMetadata().getName())))
-            .andExpect(jsonPath("$[0].group",
+            .andExpect(jsonPath("$[1].group",
                 is(layout2.getMetadata().getBaseMetadata().getGroup())))
-            .andExpect(jsonPath("$[0].screenshot",
+            .andExpect(jsonPath("$[1].screenshot",
                 is(layout2.getMetadata().getBaseMetadata().getScreenshot())))
-            .andExpect(jsonPath("$[0].user",
+            .andExpect(jsonPath("$[1].user",
                 is(layout2.getMetadata().getBaseMetadata().getUser())));
     }
 
