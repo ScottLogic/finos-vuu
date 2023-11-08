@@ -6,6 +6,7 @@
   --salt-text-label-fontSize: 10px;
   --saltFormFieldLegacy-label-paddingLeft: 0;
   --saltFormField-label-fontWeight: 400;
+  --saltText-color: var(--text-secondary-foreground, #606477);
 }
 
 .saveLayoutPanel-panelContainer {
@@ -37,8 +38,8 @@
 }
 
 .saveLayoutPanel-inputText {
-  color: var(--light-text-secondary, #606477);
-  font-family: Nunito Sans Regular;
+  color: var(--light-text-primary, #15171B);
+  font-family: "Nunito Sans", sans-serif;
   font-feature-settings: 'ss02' on, 'ss01' on, 'salt' on, 'liga' off;
   font-size: 12px;
   font-weight: 400;
