@@ -3,23 +3,22 @@
     --saltButton-width: 28px;
     --saltToolbar-background: transparent;
     --saltToolbar-height: calc(var(--salt-size-base) + 5px);
+    --vuuToolbarProxy-height: 22px;
 
-    align-items: flex-start;
     display: flex;
+    align-items: flex-start;
     color: var(--light-text-primary, #15171B);
     font-feature-settings: 'ss02' on, 'ss01' on, 'salt' on, 'liga' off;
     font-size: 16px;
     font-weight: 600;
-    padding-left: 16px;
-    margin-top: 2px;
 }
   
-  .vuuDialogHeader > .Responsive-inner {
+.vuuDialogHeader > .Responsive-inner {
     align-items: center;
-  }
+}
   
-  .vuuDialogHeader > .Responsive-inner > :last-child{
+.vuuDialogHeader > .Responsive-inner > :last-child{
     right: 2px;
-  }
+}
   
   

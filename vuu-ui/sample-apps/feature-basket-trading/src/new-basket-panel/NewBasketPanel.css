@@ -8,6 +8,8 @@
 
 .vuuBasketNewBasketPanel-body {
     flex: 1 1 auto;
+    padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 .vuuBasketNewBasketPanel-buttonBar {
@@ -15,9 +17,7 @@
     --saltButton-padding: 12px;
     display: flex;
     align-items: flex-end;
-    gap: 8px;
-    height: 32px;
     justify-content: flex-end;
-    padding: 0 16px;
-
+    padding-top: 8px;
+    gap: 8px;
 }
