@@ -79,7 +79,7 @@ export const NewBasketPanel = ({
           <DialogHeader
             title="Add New Basket"
             onClose={onClose}
-            hideCloseButton={true}
+            hideCloseButton
           />
           <div className={`${classBase}-body`}>
             <FormField>

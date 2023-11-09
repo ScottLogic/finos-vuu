@@ -14,7 +14,7 @@ export const SavePanel = () => {
       isOpen
       style={{ maxHeight: 500, borderColor: "#6d188b" }}
       title={"Save Layout"}
-      hideCloseButton={true}
+      hideCloseButton
     >
       <SaveLayoutPanel onCancel={() => {}} onSave={handleSave} />
     </Dialog>
