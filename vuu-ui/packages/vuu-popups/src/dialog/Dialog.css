@@ -8,3 +8,7 @@
   width: var(--vuuDialog-width, fit-content);
 }
 
+.vuuDialog-body {
+  padding-top: 16px;
+}
+
