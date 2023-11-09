@@ -23,7 +23,7 @@ export const useDialog = () => {
       onClose={handleClose}
       style={{ maxHeight: 500 }}
       title={dialogState.title}
-      hideCloseButton={dialogState.hideCloseButton || false}
+      hideCloseButton={dialogState.hideCloseButton}
     >
       {dialogState.content}
     </Dialog>
