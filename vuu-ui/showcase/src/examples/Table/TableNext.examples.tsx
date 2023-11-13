@@ -6,7 +6,7 @@ import {
   View,
 } from "@finos/vuu-layout";
 import { ContextPanel } from "@finos/vuu-shell";
-import { TableNext } from "@finos/vuu-table";
+import { GroupHeaderCellNext, TableNext } from "@finos/vuu-table";
 import {
   ColumnSettingsPanel,
   TableSettingsPanel,
@@ -14,42 +14,11 @@ import {
 import { ColumnDescriptor, TableConfig } from "@finos/vuu-datagrid-types";
 import { CSSProperties, useCallback, useMemo, useState } from "react";
 import { useTableConfig, useTestDataSource } from "../utils";
-import { GroupHeaderCellNext } from "@finos/vuu-table";
 import { getAllSchemas } from "@finos/vuu-data-test";
 
 import "./TableNext.examples.css";
 
 let displaySequence = 1;
-
-export const NavigationStyle = () => {
-  const {
-    typeaheadHook: _,
-    config: configProp,
-    ...props
-  } = useTableConfig({
-    rangeChangeRowset: "full",
-    table: { module: "SIMUL", table: "instruments" },
-  });
-
-  const [config, setConfig] = useState<TableConfig>(configProp);
-
-  const handleConfigChange = useCallback((config: TableConfig) => {
-    setConfig(config);
-  }, []);
-
-  return (
-    <TableNext
-      {...props}
-      config={config}
-      height={645}
-      navigationStyle="row"
-      onConfigChange={handleConfigChange}
-      renderBufferSize={5}
-      width={723}
-    />
-  );
-};
-NavigationStyle.displaySequence = displaySequence++;
 
 export const NavigationStyle = () => {
   const {
