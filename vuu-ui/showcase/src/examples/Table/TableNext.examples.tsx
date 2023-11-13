@@ -21,7 +21,7 @@ import "./TableNext.examples.css";
 
 let displaySequence = 1;
 
-export const DefaultTableNextArrayData = () => {
+export const NavigationStyle = () => {
   const {
     typeaheadHook: _,
     config: configProp,
@@ -42,13 +42,14 @@ export const DefaultTableNextArrayData = () => {
       {...props}
       config={config}
       height={645}
+      navigationStyle="row"
       onConfigChange={handleConfigChange}
       renderBufferSize={5}
       width={723}
     />
   );
 };
-DefaultTableNextArrayData.displaySequence = displaySequence++;
+NavigationStyle.displaySequence = displaySequence++;
 
 export const NavigationStyle = () => {
   const {
@@ -110,6 +111,33 @@ export const EditableTableNextArrayData = () => {
           },
         },
       },
+      lotSize: {
+        editable: true,
+        type: {
+          name: "number",
+          renderer: {
+            name: "input-cell",
+          },
+        },
+      },
+      exchange: {
+        editable: true,
+        type: {
+          name: "string",
+          renderer: {
+            name: "input-cell",
+          },
+        },
+      },
+      ric: {
+        editable: true,
+        type: {
+          name: "string",
+          renderer: {
+            name: "input-cell",
+          },
+        },
+      },
     },
     rangeChangeRowset: "full",
     table: { module: "SIMUL", table: "instruments" },
@@ -124,7 +152,7 @@ export const EditableTableNextArrayData = () => {
       dataSource={dataSource}
       height={645}
       renderBufferSize={10}
-      width={723}
+      width={500}
     />
   );
 };
