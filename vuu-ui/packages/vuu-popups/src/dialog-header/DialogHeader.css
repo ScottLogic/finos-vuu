@@ -4,11 +4,12 @@
     --saltToolbar-background: transparent;
     --saltToolbar-height: calc(var(--salt-size-base) + 5px);
     --vuuToolbarProxy-height: 22px;
+    --salt-text-fontFamily: Nunito Sans A-Variant, sans-serif;
 
     display: flex;
     align-items: flex-start;
     color: var(--light-text-primary, #15171B);
-    font-feature-settings: 'ss02' on, 'ss01' on, 'salt' on, 'liga' off;
+    font-feature-settings: 'ss02' on, 'ss01' on, 'salt' on, 'liga' off !important;
     font-size: 16px;
     font-weight: 600;
 }
