@@ -26,6 +26,7 @@ export async function build(config) {
     define: {
       "process.env.NODE_ENV": `"${env}"`,
       "process.env.NODE_DEBUG": `false`,
+      "process.env.LOCAL": `true`,
     },
     external,
     footer,
