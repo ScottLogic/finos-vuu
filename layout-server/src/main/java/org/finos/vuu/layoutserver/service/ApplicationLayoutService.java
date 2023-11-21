@@ -24,11 +24,11 @@ public class ApplicationLayoutService {
         repository.save(new ApplicationLayout(username, layoutDefinition));
     }
 
-    public ApplicationLayout getApplicationLayout(String username) {
+    public ObjectNode getApplicationLayout(String username) {
         return repository.findById(username).orElseGet(() -> {
             logger.info("No application layout for user, returning default");
             return defaultLoader.getDefaultLayout();
-        });
+        }).getDefinition();
     }
 
     public void deleteApplicationLayout(String username) {

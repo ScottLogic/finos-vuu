@@ -1,5 +1,4 @@
 import {
-  ApplicationLayout,
   LayoutMetadata,
   LayoutMetadataDto,
 } from "@finos/vuu-shell";
@@ -169,7 +168,7 @@ export class RemoteLayoutPersistenceManager
           if (!response.ok) {
             reject(new Error(response.statusText));
           }
-          response.json().then((applicationLayout: ApplicationLayout) => {
+          response.json().then((applicationLayout: LayoutJSON) => {
             if (!applicationLayout) {
               reject(
                 new Error(
@@ -177,7 +176,7 @@ export class RemoteLayoutPersistenceManager
                 )
               );
             }
-            resolve(applicationLayout.definition);
+            resolve(applicationLayout);
           });
         })
         .catch((error: Error) => {

@@ -17,8 +17,3 @@ export type LayoutMetadataDto = Omit<LayoutMetadata, "id" | "created">;
 export interface Layout extends WithId {
   json: LayoutJSON;
 }
-
-export type ApplicationLayout = {
-  username: string,
-  definition: LayoutJSON
-};

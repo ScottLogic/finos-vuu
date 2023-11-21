@@ -39,13 +39,12 @@ class ApplicationLayoutServiceTest {
     public void getApplicationLayout_noLayout_returnsDefault() throws JsonProcessingException {
         when(mockRepo.findById(anyString())).thenReturn(Optional.empty());
 
-        ApplicationLayout actualLayout = service.getApplicationLayout("new user");
+        ObjectNode actualDefinition = service.getApplicationLayout("new user");
 
         // Expecting application layout as defined in /test/resources/defaultApplicationLayout.json
         ObjectNode expectedDefinition = objectNodeConverter.convertToEntityAttribute("{\"defaultLayoutKey\":\"default-layout-value\"}");
 
-        assertThat(actualLayout.getUsername()).isNull();
-        assertThat(actualLayout.getDefinition()).isEqualTo(expectedDefinition);
+        assertThat(actualDefinition).isEqualTo(expectedDefinition);
     }
 
     @Test
@@ -57,9 +56,9 @@ class ApplicationLayoutServiceTest {
 
         when(mockRepo.findById(user)).thenReturn(Optional.of(expectedLayout));
 
-        ApplicationLayout actualLayout = service.getApplicationLayout(user);
+        ObjectNode actualDefinition = service.getApplicationLayout(user);
 
-        assertThat(actualLayout).isEqualTo(expectedLayout);
+        assertThat(actualDefinition).isEqualTo(expectedDefinition);
     }
 
     @Test

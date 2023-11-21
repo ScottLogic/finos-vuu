@@ -2,7 +2,6 @@ package org.finos.vuu.layoutserver.controller;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
-import org.finos.vuu.layoutserver.dto.response.ApplicationLayoutDto;
 import org.finos.vuu.layoutserver.service.ApplicationLayoutService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -32,8 +31,8 @@ public class ApplicationLayoutController {
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public ApplicationLayoutDto getApplicationLayout(@RequestHeader("username") String username) {
-        return mapper.map(service.getApplicationLayout(username), ApplicationLayoutDto.class);
+    public ObjectNode getApplicationLayout(@RequestHeader("username") String username) {
+        return service.getApplicationLayout(username);
     }
 
     /**
@@ -52,7 +51,7 @@ public class ApplicationLayoutController {
      * Deletes the application layout for the requesting user. A 404 will be returned if there is no existing
      * application layout.
      *
-     * @param username         the user making the request
+     * @param username the user making the request
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping
