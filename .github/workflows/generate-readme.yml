@@ -1,0 +1,19 @@
+name: Generate README from docs folder
+on: push
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      # TODO: check if source docs have been changed
+      - name: Generate readme
+        run: cat docs/**/*.md > README_AUTO.md
+      - name: Commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: 'Update readme'
+          add: 'README_AUTO.md'
+          default_author: github_actions
