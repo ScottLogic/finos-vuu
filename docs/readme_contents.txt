@@ -1,2 +1,2 @@
-./docs/faq/debugging_json_messages.md
-./docs/faq/faq.md
+./docs/introduction/*.md
+./docs/getting_started/*.md
