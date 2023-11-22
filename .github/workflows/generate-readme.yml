@@ -8,9 +8,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      # TODO: check if source docs have been changed
       - name: Generate readme
-        run: cat docs/**/*.md > README_AUTO.md
+        run: generate-readme.sh
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
