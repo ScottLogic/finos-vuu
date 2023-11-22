@@ -1,3 +1,6 @@
+# A Whole New File
+
+A new fantastic point of view?
 # Hey look, new content!
 
 # Debugging JSON messages on the wire
