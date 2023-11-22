@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Generate readme
-        run: generate-readme.sh
+        run: .github/workflows/generate-readme.sh
       - name: Commit
         uses: EndBug/add-and-commit@v9
         with:
