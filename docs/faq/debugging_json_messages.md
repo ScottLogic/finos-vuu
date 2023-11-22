@@ -1,5 +1,3 @@
-# Hey look, new content!
-
 # Debugging JSON messages on the wire
 
 ## I'd like to see the messaging on the wire, how can I do that?
