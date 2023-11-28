@@ -3,7 +3,6 @@ package org.finos.vuu.layoutserver.controller;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import org.finos.vuu.layoutserver.service.ApplicationLayoutService;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ApplicationLayoutController {
 
     private final ApplicationLayoutService service;
-    private final ModelMapper mapper;
 
     /**
      * Gets the persisted application layout for the requesting user. If the requesting user does not have an
