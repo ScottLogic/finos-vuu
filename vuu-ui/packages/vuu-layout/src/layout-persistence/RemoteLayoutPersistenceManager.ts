@@ -9,6 +9,7 @@ const applicationLayoutsSaveLocation = "application-layouts";
 
 export type CreateLayoutResponseDto = { metadata: LayoutMetadata };
 export type GetLayoutResponseDto = { definition: LayoutJSON };
+export type GetApplicationResponseDto = { definition: ApplicationJSON };
 
 export class RemoteLayoutPersistenceManager
   implements LayoutPersistenceManager
