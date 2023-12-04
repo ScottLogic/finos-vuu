@@ -16,7 +16,6 @@ import { logger, partition } from "@finos/vuu-utils";
 import { Connection } from "../connectionTypes";
 import {
   DataSourceCallbackMessage,
-  DataSourceEnabledMessage,
   DataSourceVisualLinkCreatedMessage,
   DataSourceVisualLinkRemovedMessage,
 } from "../data-source";
@@ -824,10 +823,9 @@ export class ServerProxy {
           }
         }
         break;
-      case Message.TABLE_ROW:
+      case "TABLE_ROW":
         {
           const viewportRowMap = groupRowsByViewport(body.rows);
-
           if (process.env.NODE_ENV === "development" && debugEnabled) {
             const [firstRow, secondRow] = body.rows;
             if (body.rows.length === 0) {
@@ -876,7 +874,7 @@ export class ServerProxy {
         }
         break;
 
-      case Message.CHANGE_VP_RANGE_SUCCESS:
+      case "CHANGE_VP_RANGE_SUCCESS":
         {
           const viewport = this.viewports.get(body.viewPortId);
           if (viewport) {
@@ -1049,14 +1047,26 @@ export class ServerProxy {
         }
         break;
 
-      case Message.RPC_RESP:
+      case "RPC_RESP":
         {
           const { method, result } = body;
           // check to see if the orderEntry is already open on the page
           this.postMessageToClient({
-            type: Message.RPC_RESP,
+            type: "RPC_RESP",
             method,
             result,
+            requestId,
+          });
+        }
+        break;
+
+      case "VIEW_PORT_RPC_REPONSE":
+        {
+          const { method, action } = body;
+          this.postMessageToClient({
+            type: "VIEW_PORT_RPC_RESPONSE",
+            rpcName: method,
+            action,
             requestId,
           });
         }

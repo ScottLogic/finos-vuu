@@ -1,4 +1,13 @@
 import { connectToServer } from "@finos/vuu-data";
+import {
+  DraggableLayout,
+  LayoutProvider,
+  LayoutProviderProps,
+  loadingApplicationJson,
+  useLayoutContextMenuItems,
+} from "@finos/vuu-layout";
+import { LayoutChangeHandler } from "@finos/vuu-layout/src/layout-reducer";
+import { logger } from "@finos/vuu-utils";
 import cx from "classnames";
 import {
   HTMLAttributes,
@@ -8,19 +17,14 @@ import {
   useEffect,
   useRef,
 } from "react";
-import {
-  DraggableLayout,
-  LayoutProvider,
-  LayoutProviderProps,
-} from "@finos/vuu-layout";
-import { LayoutChangeHandler } from "@finos/vuu-layout/src/layout-reducer";
 import { AppHeader } from "./app-header";
-import { ThemeMode, ThemeProvider, useThemeAttributes } from "./theme-provider";
-import { logger } from "@finos/vuu-utils";
-import { useShellLayout } from "./shell-layouts";
-import { SaveLocation } from "./shellTypes";
 import { useLayoutManager } from "./layout-management";
+import { SidePanelProps, useShellLayout } from "./shell-layouts";
+import { SaveLocation } from "./shellTypes";
+import { ThemeMode, ThemeProvider, useThemeAttributes } from "./theme-provider";
+import { ShellContextProvider } from ".";
 
+import { ContextMenuProvider, useDialog } from "@finos/vuu-popups";
 import "./shell.css";
 
 export type VuuUser = {
@@ -30,13 +34,17 @@ export type VuuUser = {
 
 const { error } = logger("Shell");
 
+const defaultLeftSidePanel: ShellProps["LeftSidePanelProps"] = {};
+
+export type LayoutTemplateName = "full-height" | "inlay";
+
 export interface ShellProps extends HTMLAttributes<HTMLDivElement> {
   LayoutProps?: Pick<
     LayoutProviderProps,
     "createNewChild" | "pathToDropTarget"
   >;
+  LeftSidePanelProps?: SidePanelProps;
   children?: ReactNode;
-  leftSidePanel?: ReactElement;
   leftSidePanelLayout?: "full-height" | "inlay";
   loginUrl?: string;
   // paletteConfig: any;
@@ -48,9 +56,9 @@ export interface ShellProps extends HTMLAttributes<HTMLDivElement> {
 
 export const Shell = ({
   LayoutProps,
+  LeftSidePanelProps = defaultLeftSidePanel,
   children,
   className: classNameProp,
-  leftSidePanel,
   leftSidePanelLayout,
   loginUrl,
   saveLocation = "remote",
@@ -60,15 +68,17 @@ export const Shell = ({
   ...htmlAttributes
 }: ShellProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
+  const { dialog, setDialogState } = useDialog();
   const layoutId = useRef("latest");
-  const { applicationLayout, saveApplicationLayout, loadLayoutById } =
+  const { applicationJson, saveApplicationLayout, loadLayoutById } =
     useLayoutManager();
+  const { buildMenuOptions, handleMenuAction } =
+    useLayoutContextMenuItems(setDialogState);
 
   const handleLayoutChange = useCallback<LayoutChangeHandler>(
     (layout, layoutChangeReason) => {
       try {
         saveApplicationLayout(layout);
-        // saveLayoutConfig(layout);
       } catch {
         error?.("Failed to save layout");
       }
@@ -82,6 +92,7 @@ export const Shell = ({
     }
   }, []);
 
+  // TODO this is out of date
   const handleNavigate = useCallback(
     (id) => {
       layoutId.current = id;
@@ -103,7 +114,10 @@ export const Shell = ({
   const [themeClass, densityClass, dataMode] = useThemeAttributes();
   const className = cx("vuuShell", classNameProp, themeClass, densityClass);
 
+  const isLoading = applicationJson === loadingApplicationJson;
+
   const shellLayout = useShellLayout({
+    LeftSidePanelProps,
     leftSidePanelLayout,
     appHeader: (
       <AppHeader
@@ -114,26 +128,30 @@ export const Shell = ({
         onSwitchTheme={handleSwitchTheme}
       />
     ),
-    leftSidePanel,
   });
 
-  return (
+  return isLoading ? null : (
     <ThemeProvider>
-      <LayoutProvider
-        {...LayoutProps}
-        layout={applicationLayout}
-        onLayoutChange={handleLayoutChange}
+      <ContextMenuProvider
+        menuActionHandler={handleMenuAction}
+        menuBuilder={buildMenuOptions}
       >
-        <DraggableLayout
-          className={className}
-          data-mode={dataMode}
-          ref={rootRef}
-          {...htmlAttributes}
+        <LayoutProvider
+          {...LayoutProps}
+          layout={applicationJson.layout}
+          onLayoutChange={handleLayoutChange}
         >
-          {shellLayout}
-        </DraggableLayout>
-      </LayoutProvider>
-      {children}
+          <DraggableLayout
+            className={className}
+            data-mode={dataMode}
+            ref={rootRef}
+            {...htmlAttributes}
+          >
+            {shellLayout}
+          </DraggableLayout>
+        </LayoutProvider>
+        {children || dialog}
+      </ContextMenuProvider>
     </ThemeProvider>
   );
 };

@@ -1,25 +1,32 @@
 import { useViewContext } from "@finos/vuu-layout";
-import { DataSource, RemoteDataSource, TableSchema } from "@finos/vuu-data";
+import {
+  DataSource,
+  DataSourceConfig,
+  RemoteDataSource,
+  TableSchema,
+  ViewportRpcResponse,
+} from "@finos/vuu-data";
 import { useCallback, useMemo } from "react";
 import { BasketTradingFeatureProps } from "./VuuBasketTradingFeature";
-import { VuuFilter } from "@finos/vuu-protocol-types";
+import { NotificationLevel, useNotifications } from "@finos/vuu-popups";
 
 export type basketDataSourceKey =
   | "data-source-basket"
   | "data-source-basket-trading-control"
   | "data-source-basket-trading-search"
   | "data-source-basket-trading-constituent-join"
-  | "data-source-instruments";
+  | "data-source-basket-constituent";
 
-const NO_FILTER = { filter: "" };
+const NO_CONFIG = {};
 
 export const useBasketTradingDataSources = ({
   basketSchema,
   basketInstanceId,
   basketTradingSchema,
   basketTradingConstituentJoinSchema,
-  instrumentsSchema,
+  basketConstituentSchema,
 }: BasketTradingFeatureProps & { basketInstanceId: string }) => {
+  const { notify } = useNotifications();
   const { id, loadSession, saveSession, title } = useViewContext();
 
   const [
@@ -27,18 +34,21 @@ export const useBasketTradingDataSources = ({
     dataSourceBasketTradingControl,
     dataSourceBasketTradingSearch,
     dataSourceBasketTradingConstituentJoin,
-    dataSourceInstruments,
+    dataSourceBasketConstituent,
   ] = useMemo(() => {
-    const basketFilter: VuuFilter = basketInstanceId
+    const basketFilter: DataSourceConfig = basketInstanceId
       ? {
-          filter: `instanceId = "${basketInstanceId}"`,
+          filter: {
+            filter: `instanceId = "${basketInstanceId}"`,
+          },
         }
-      : NO_FILTER;
+      : NO_CONFIG;
+
     const dataSourceConfig: [
       basketDataSourceKey,
       TableSchema,
       number,
-      VuuFilter?
+      DataSourceConfig?
     ][] = [
       ["data-source-basket", basketSchema, 100],
       [
@@ -54,16 +64,23 @@ export const useBasketTradingDataSources = ({
         100,
         basketFilter,
       ],
-      ["data-source-instruments", instrumentsSchema, 100],
+      [
+        "data-source-basket-constituent",
+        basketConstituentSchema,
+        100,
+        // {
+        //   sort: { sortDefs: [{ column: "description", sortType: "A" }] },
+        // },
+      ],
     ];
 
     const dataSources: DataSource[] = [];
-    for (const [key, schema, bufferSize, filter] of dataSourceConfig) {
+    for (const [key, schema, bufferSize, config] of dataSourceConfig) {
       let dataSource = loadSession?.(key) as RemoteDataSource;
       if (dataSource === undefined) {
         dataSource = new RemoteDataSource({
+          ...config,
           bufferSize,
-          filter,
           viewport: `${id}-${key}`,
           table: schema.table,
           columns: schema.columns.map((col) => col.name),
@@ -79,7 +96,7 @@ export const useBasketTradingDataSources = ({
     basketTradingSchema,
     basketInstanceId,
     basketTradingConstituentJoinSchema,
-    instrumentsSchema,
+    basketConstituentSchema,
     loadSession,
     id,
     title,
@@ -89,19 +106,24 @@ export const useBasketTradingDataSources = ({
   const handleSendToMarket = useCallback(
     (basketInstanceId: string) => {
       dataSourceBasketTradingControl
-        .rpcCall?.({
+        .rpcCall?.<ViewportRpcResponse>({
           namedParams: {},
           params: [basketInstanceId],
           rpcName: "sendToMarket",
           type: "VIEW_PORT_RPC_CALL",
         })
         .then((response) => {
-          console.log(`response from sendToMarket call`, {
-            response,
-          });
+          if (response?.action.type === "VP_RPC_FAILURE") {
+            notify({
+              type: NotificationLevel.Error,
+              header: "Failed to Send to market",
+              body: "Please contact your support team",
+            });
+            console.error(response.action.msg);
+          }
         });
     },
-    [dataSourceBasketTradingControl]
+    [dataSourceBasketTradingControl, notify]
   );
 
   const handleTakeOffMarket = useCallback(() => {
@@ -113,7 +135,7 @@ export const useBasketTradingDataSources = ({
     dataSourceBasketTradingControl,
     dataSourceBasketTradingSearch,
     dataSourceBasketTradingConstituentJoin,
-    dataSourceInstruments,
+    dataSourceBasketConstituent,
     onSendToMarket: handleSendToMarket,
     onTakeOffMarket: handleTakeOffMarket,
   };

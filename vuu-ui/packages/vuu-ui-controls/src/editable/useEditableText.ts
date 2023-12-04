@@ -54,6 +54,7 @@ export const useEditableText = <T extends string | number = string>({
           setMessage(warningMessage);
         } else {
           setMessage(undefined);
+          console.log(`commit value ${value}`);
           onCommit(value as T).then((response) => {
             if (response === true) {
               isDirtyRef.current = false;
@@ -96,7 +97,9 @@ export const useEditableText = <T extends string | number = string>({
 
   const handleBlur = useCallback<FocusEventHandler<HTMLElement>>(
     (evt) => {
-      commit(evt.target as HTMLElement);
+      if (isDirtyRef.current) {
+        commit(evt.target as HTMLElement);
+      }
     },
     [commit]
   );

@@ -1,15 +1,13 @@
 import { byModule } from "@finos/vuu-data";
-import {
-  registerComponent,
-  useLayoutContextMenuItems,
-} from "@finos/vuu-layout";
-import { ContextMenuProvider, useDialog } from "@finos/vuu-popups";
+import { registerComponent } from "@finos/vuu-layout";
+import { NotificationsProvider, useDialog } from "@finos/vuu-popups";
 import {
   FeatureConfig,
   FeatureProps,
   LayoutManagementProvider,
   LeftNav,
   Shell,
+  SidePanelProps,
 } from "@finos/vuu-shell";
 import {
   ColumnSettingsPanel,
@@ -76,7 +74,7 @@ const features: FeatureProps[] = [
       basketSchema: schemas.basket,
       basketTradingSchema: schemas.basketTrading,
       basketTradingConstituentJoinSchema: schemas.basketTradingConstituentJoin,
-      instrumentsSchema: schemas.instruments,
+      basketConstituentSchema: schemas.basketConstituent,
     },
   },
 ];
@@ -94,9 +92,7 @@ const tableFeatures: FeatureProps<FilterTableFeatureProps>[] = Object.values(
   }));
 
 const ShellWithNewTheme = () => {
-  const { dialog, setDialogState } = useDialog();
-  const { buildMenuOptions, handleMenuAction } =
-    useLayoutContextMenuItems(setDialogState);
+  const { dialog } = useDialog();
 
   const dragSource = useMemo(
     () => ({
@@ -105,45 +101,44 @@ const ShellWithNewTheme = () => {
     []
   );
 
+  const leftSidePanelProps = useMemo<SidePanelProps>(
+    () => ({
+      children: <LeftNav features={features} tableFeatures={tableFeatures} />,
+      sizeOpen: 240,
+    }),
+    []
+  );
+
   return (
-    <ContextMenuProvider
-      menuActionHandler={handleMenuAction}
-      menuBuilder={buildMenuOptions}
-    >
-      <DragDropProvider dragSources={dragSource}>
-        <Shell
-          LayoutProps={{
-            pathToDropTarget: "#main-tabs.ACTIVE_CHILD",
-          }}
-          leftSidePanelLayout="full-height"
-          leftSidePanel={
-            <LeftNav
-              features={features}
-              tableFeatures={tableFeatures}
-              style={{ width: 240 }}
-            />
-          }
-          loginUrl={window.location.toString()}
-          user={user}
-          style={
-            {
-              "--vuuShell-height": "100vh",
-              "--vuuShell-width": "100vw",
-            } as CSSProperties
-          }
-        >
-          {dialog}
-        </Shell>
-      </DragDropProvider>
-    </ContextMenuProvider>
+    <DragDropProvider dragSources={dragSource}>
+      <Shell
+        LayoutProps={{
+          pathToDropTarget: "#main-tabs.ACTIVE_CHILD",
+        }}
+        LeftSidePanelProps={leftSidePanelProps}
+        leftSidePanelLayout="full-height"
+        loginUrl={window.location.toString()}
+        user={user}
+        style={
+          {
+            "--vuuShell-height": "100vh",
+            "--vuuShell-width": "100vw",
+          } as CSSProperties
+        }
+      >
+        {dialog}
+      </Shell>
+    </DragDropProvider>
   );
 };
 
 export const ShellWithNewThemeAndLayoutManagement = () => {
   return (
-    <LayoutManagementProvider>
-      <ShellWithNewTheme />
-    </LayoutManagementProvider>
+    <NotificationsProvider>
+      <LayoutManagementProvider>
+        <ShellWithNewTheme />
+      </LayoutManagementProvider>
+    </NotificationsProvider>
   );
 };
 

@@ -1,9 +1,6 @@
-import {
-  LayoutMetadata,
-  LayoutMetadataDto,
-} from "@finos/vuu-shell";
+import { LayoutMetadata, LayoutMetadataDto } from "@finos/vuu-shell";
 import { LayoutPersistenceManager } from "./LayoutPersistenceManager";
-import { LayoutJSON } from "../layout-reducer";
+import { ApplicationJSON, LayoutJSON } from "../layout-reducer";
 
 const baseURL = process.env.LAYOUT_BASE_URL;
 const metadataSaveLocation = "layouts/metadata";
@@ -134,7 +131,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  saveApplicationLayout(layout: LayoutJSON): Promise<void> {
+  saveApplicationJSON(applicationJSON: ApplicationJSON): Promise<void> {
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${applicationLayoutsSaveLocation}`, {
         method: "PUT",
@@ -142,7 +139,7 @@ export class RemoteLayoutPersistenceManager
           "Content-Type": "application/json",
           username: "vuu-user",
         },
-        body: JSON.stringify(layout),
+        body: JSON.stringify(applicationJSON),
       })
         .then((response) => {
           if (!response.ok) {
@@ -156,7 +153,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  loadApplicationLayout(): Promise<LayoutJSON> {
+  loadApplicationJSON(): Promise<ApplicationJSON> {
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${applicationLayoutsSaveLocation}`, {
         method: "GET",
@@ -168,15 +165,15 @@ export class RemoteLayoutPersistenceManager
           if (!response.ok) {
             reject(new Error(response.statusText));
           }
-          response.json().then((applicationLayout: LayoutJSON) => {
-            if (!applicationLayout) {
+          response.json().then((applicationJSON: ApplicationJSON) => {
+            if (!applicationJSON) {
               reject(
                 new Error(
                   "Response did not contain valid application layout information"
                 )
               );
             }
-            resolve(applicationLayout);
+            resolve(applicationJSON);
           });
         })
         .catch((error: Error) => {

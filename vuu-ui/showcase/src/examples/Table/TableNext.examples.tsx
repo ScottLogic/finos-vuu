@@ -6,7 +6,11 @@ import {
   Toolbar,
   View,
 } from "@finos/vuu-layout";
-import { ContextPanel } from "@finos/vuu-shell";
+import { ContextPanel, DefaultColumnConfiguration } from "@finos/vuu-shell";
+import {
+  applyDefaultColumnConfig,
+  registerComponent as registerCellRenderer,
+} from "@finos/vuu-utils";
 import { TableNext, TableProps } from "@finos/vuu-table";
 import {
   ColumnSettingsPanel,
@@ -25,6 +29,7 @@ import {
 
 import "./TableNext.examples.css";
 import { Button } from "@salt-ds/core";
+import { HeaderCellProps } from "packages/vuu-datagrid/src";
 
 let displaySequence = 1;
 
@@ -115,78 +120,91 @@ export const ControlledNavigation = () => {
 ControlledNavigation.displaySequence = displaySequence++;
 
 export const EditableTableNextArrayData = () => {
-  const { config, dataSource } = useTableConfig({
-    columnConfig: {
-      bbg: {
-        editable: true,
-        type: {
-          name: "string",
-          renderer: {
-            name: "input-cell",
-            rules: [
-              { name: "vuu-case", value: "upper" },
-              {
-                name: "vuu-pattern",
-                value: "^.{5,8}$",
-                message: "Value must contain between 5 and 8 characters",
+  const getDefaultColumnConfig = useMemo<DefaultColumnConfiguration>(
+    () => (tableName, columnName) => {
+      switch (columnName) {
+        case "bbg":
+          return {
+            editable: true,
+            type: {
+              name: "string",
+              renderer: {
+                name: "input-cell",
+                // rules: [
+                //   { name: "vuu-case", value: "upper" },
+                //   {
+                //     name: "vuu-pattern",
+                //     value: "^.{5,8}$",
+                //     message: "Value must contain between 5 and 8 characters",
+                //   },
+                // ],
               },
-            ],
-          },
-        },
-      },
-      currency: {
-        editable: true,
-        type: {
-          name: "string",
-          renderer: {
-            name: "dropdown-cell",
-            values: ["CAD", "EUR", "GBP", "GBX", "USD"],
-          },
-        },
-      },
-      lotSize: {
-        editable: true,
-        type: {
-          name: "number",
-          renderer: {
-            name: "input-cell",
-          },
-        },
-      },
-      exchange: {
-        editable: true,
-        type: {
-          name: "string",
-          renderer: {
-            name: "input-cell",
-          },
-        },
-      },
-      ric: {
-        editable: true,
-        type: {
-          name: "string",
-          renderer: {
-            name: "input-cell",
-          },
-        },
-      },
+            },
+          };
+        case "ccy":
+          return {
+            editable: true,
+            type: {
+              name: "string",
+              renderer: {
+                name: "dropdown-cell",
+                values: ["CAD", "EUR", "GBP", "GBX", "USD"],
+              },
+            },
+          };
+        case "lotSize":
+          return {
+            editable: true,
+            type: {
+              name: "number",
+              renderer: {
+                name: "input-cell",
+              },
+            },
+          };
+        case "exchange":
+          return {
+            editable: true,
+            type: {
+              name: "string",
+              renderer: {
+                name: "input-cell",
+              },
+            },
+          };
+        case "ric":
+          return {
+            editable: true,
+            type: {
+              name: "string",
+              renderer: {
+                name: "input-cell",
+              },
+            },
+          };
+      }
     },
-    rangeChangeRowset: "full",
-    table: { module: "SIMUL", table: "instruments" },
-  });
+    []
+  );
+
+  const tableProps = useMemo<Pick<TableProps, "config" | "dataSource">>(() => {
+    const tableName: SimulTableName = "instruments";
+    return {
+      config: {
+        columns: applyDefaultColumnConfig(
+          getSchema(tableName),
+          getDefaultColumnConfig
+        ),
+        rowSeparators: true,
+        zebraStripes: true,
+      },
+      dataSource:
+        vuuModule<SimulTableName>("SIMUL").createDataSource(tableName),
+    };
+  }, [getDefaultColumnConfig]);
 
   return (
-    <TableNext
-      config={{
-        ...config,
-        rowSeparators: true,
-      }}
-      dataSource={dataSource}
-      height={645}
-      renderBufferSize={10}
-      width={500}
-    />
+    <TableNext {...tableProps} height={645} renderBufferSize={10} width={500} />
   );
 };
 EditableTableNextArrayData.displaySequence = displaySequence++;
@@ -705,7 +723,7 @@ export const GroupHeaderCellNextThreeColumnFixedWidth = () => {
       {
         key: 3,
         name: "price",
-        label: "proce",
+        label: "price",
         valueFormatter,
         width: 100,
       },
@@ -728,3 +746,64 @@ export const GroupHeaderCellNextThreeColumnFixedWidth = () => {
   );
 };
 GroupHeaderCellNextThreeColumnFixedWidth.displaySequence = displaySequence++;
+
+const SymbolHeader = ({ column }: HeaderCellProps) => {
+  return (
+    <span
+      style={{
+        cursor: "pointer",
+        flex: 1,
+        display: "flex",
+        justifyContent: "flex-end",
+      }}
+    >
+      <Button variant="secondary" data-icon="add" />
+    </span>
+  );
+};
+
+registerCellRenderer("symbol-header", SymbolHeader, "cell-renderer", {});
+
+export const CustomColumnRenderer = () => {
+  const tableProps = useMemo<Pick<TableProps, "config" | "dataSource">>(() => {
+    const tableName: SimulTableName = "instruments";
+    return {
+      config: {
+        columns: applyDefaultColumnConfig(
+          getSchema(tableName),
+          (tableName, column) => {
+            if (column === "bbg") {
+              return {
+                colHeaderContentRenderer: "symbol-header",
+              };
+            }
+          }
+        ),
+        rowSeparators: true,
+        zebraStripes: true,
+      },
+      dataSource:
+        vuuModule<SimulTableName>("SIMUL").createDataSource(tableName),
+    };
+  }, []);
+
+  const onSelect = useCallback((row) => {
+    console.log({ row });
+  }, []);
+  const onSelectionChange = useCallback((selected) => {
+    console.log({ selected });
+  }, []);
+
+  return (
+    <TableNext
+      {...tableProps}
+      height={645}
+      navigationStyle="row"
+      renderBufferSize={5}
+      onSelect={onSelect}
+      onSelectionChange={onSelectionChange}
+      width={723}
+    />
+  );
+};
+CustomColumnRenderer.displaySequence = displaySequence++;

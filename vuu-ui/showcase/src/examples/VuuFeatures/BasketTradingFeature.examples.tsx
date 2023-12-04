@@ -8,6 +8,7 @@ import {
   useLayoutManager,
 } from "@finos/vuu-shell";
 import { useCallback, useEffect } from "react";
+import { BasketTradingFeatureProps } from "sample-apps/feature-basket-trading";
 import { BasketTradingFeature } from "../../features/BasketTrading.feature";
 import { VuuBlotterHeader } from "./VuuBlotterHeader";
 
@@ -22,7 +23,8 @@ export const DefaultBasketTradingFeature = () => {
   // Likewise the Shell provides the LayoutProvider wrapper. Again, in a full Vuu
   // application, the Palette wraps each feature in a View.
   //-----------------------------------------------------------------------------------
-  const { applicationLayout, saveApplicationLayout } = useLayoutManager();
+  const { applicationJson: applicationLayout, saveApplicationLayout } =
+    useLayoutManager();
 
   useEffect(() => {
     console.log(`%clayout changed`, "color: blue; font-weight: bold;");
@@ -60,7 +62,7 @@ export const DefaultBasketTradingFeature = () => {
   return (
     <ShellContextProvider value={{ getLookupValues }}>
       <LayoutProvider
-        layout={applicationLayout}
+        layout={applicationLayout.layout}
         onLayoutChange={handleLayoutChange}
       >
         <View
@@ -78,7 +80,7 @@ export const DefaultBasketTradingFeature = () => {
             basketTradingConstituentJoinSchema={
               schemas.basketTradingConstituentJoin
             }
-            instrumentsSchema={schemas.instruments}
+            basketConstituentSchema={schemas.basketConstituent}
           />
         </View>
       </LayoutProvider>
@@ -102,7 +104,6 @@ const featurePropsForEnv: Record<Environment, FeatureProps> = {
 export const BasketTradingFeatureAsFeature = () => {
   const { url, css } = featurePropsForEnv[env];
   const schemas = getAllSchemas();
-
   return (
     <View
       Header={VuuBlotterHeader}
@@ -114,13 +115,15 @@ export const BasketTradingFeatureAsFeature = () => {
       style={{ width: 1260, height: 600 }}
     >
       <Feature
-        ComponentProps={{
-          basketSchema: schemas.basket,
-          basketTradingSchema: schemas.basketTrading,
-          basketTradingSchemaConstituentJoin:
-            schemas.basketTradingConstituentJoin,
-          instrumentsSchema: schemas.instruments,
-        }}
+        ComponentProps={
+          {
+            basketSchema: schemas.basket,
+            basketTradingSchema: schemas.basketTrading,
+            basketTradingConstituentJoinSchema:
+              schemas.basketTradingConstituentJoin,
+            basketConstituentSchema: schemas.basketConstituent,
+          } as BasketTradingFeatureProps
+        }
         url={url}
         css={css}
       />

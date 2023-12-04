@@ -1,13 +1,12 @@
+import { registerComponent } from "@finos/vuu-layout";
+import { useDialog } from "@finos/vuu-popups";
 import {
-  registerComponent,
-  useLayoutContextMenuItems,
-} from "@finos/vuu-layout";
-import { ContextMenuProvider, useDialog } from "@finos/vuu-popups";
-import {
+  LayoutManagementProvider,
   LeftNav,
   Shell,
   ShellContextProvider,
   ShellProps,
+  SidePanelProps,
   VuuUser,
 } from "@finos/vuu-shell";
 import {
@@ -17,6 +16,7 @@ import {
 import { getDefaultColumnConfig } from "./columnMetaData";
 import { createPlaceholder } from "./createPlaceholder";
 import { useFeatures } from "./useFeatures";
+import { NotificationsProvider } from "@finos/vuu-popups";
 
 import { DragDropProvider } from "@finos/vuu-ui-controls";
 import "./App.css";
@@ -48,8 +48,6 @@ export const App = ({ user }: { user: VuuUser }) => {
 
   const { dialog, setDialogState } = useDialog();
   const { handleRpcResponse } = useRpcResponseHandler(setDialogState);
-  const { buildMenuOptions, handleMenuAction } =
-    useLayoutContextMenuItems(setDialogState);
 
   const dragSource = useMemo(
     () => ({
@@ -58,35 +56,35 @@ export const App = ({ user }: { user: VuuUser }) => {
     []
   );
 
-  // TODO get Context from Shell
+  const leftSidePanelProps = useMemo<SidePanelProps>(
+    () => ({
+      children: <LeftNav features={features} tableFeatures={tableFeatures} />,
+      sizeOpen: 240,
+    }),
+    [features, tableFeatures]
+  );
+
   return (
-    <ContextMenuProvider
-      menuActionHandler={handleMenuAction}
-      menuBuilder={buildMenuOptions}
-    >
-      <DragDropProvider dragSources={dragSource}>
-        <ShellContextProvider
-          value={{ getDefaultColumnConfig, handleRpcResponse }}
-        >
-          <Shell
-            LayoutProps={layoutProps}
-            className="App"
-            leftSidePanelLayout="full-height"
-            leftSidePanel={
-              <LeftNav
-                features={features}
-                tableFeatures={tableFeatures}
-                style={{ width: 240 }}
-              />
-            }
-            saveUrl="https://localhost:8443/api/vui"
-            serverUrl={serverUrl}
-            user={user}
+    <NotificationsProvider>
+      <LayoutManagementProvider>
+        <DragDropProvider dragSources={dragSource}>
+          <ShellContextProvider
+            value={{ getDefaultColumnConfig, handleRpcResponse }}
           >
-            {dialog}
-          </Shell>
-        </ShellContextProvider>
-      </DragDropProvider>
-    </ContextMenuProvider>
+            <Shell
+              LayoutProps={layoutProps}
+              LeftSidePanelProps={leftSidePanelProps}
+              className="App"
+              leftSidePanelLayout="full-height"
+              saveUrl="https://localhost:8443/api/vui"
+              serverUrl={serverUrl}
+              user={user}
+            >
+              {dialog}
+            </Shell>
+          </ShellContextProvider>
+        </DragDropProvider>
+      </LayoutManagementProvider>
+    </NotificationsProvider>
   );
 };
