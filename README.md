@@ -4,7 +4,8 @@
 
 ## The Realtime View Server
 
-Welcome. We maintain a docusaurus site containing all the details of the project. Why not get started there:
+Welcome. We maintain a docusaurus site containing all the details of the project. Why not get
+started there:
 
 <https://vuu.finos.org/docs/introduction/intro>
 
@@ -14,7 +15,8 @@ Welcome. We maintain a docusaurus site containing all the details of the project
 
 #### Prerequisites
 
-See the [Docs](https://vuu.finos.org/docs/getting_started/developing) for Java versions and install dependencies you need to have.
+See the [Docs](https://vuu.finos.org/docs/getting_started/developing) for Java versions and install
+dependencies you need to have.
 
 #### OS X & Linux
 
@@ -39,20 +41,26 @@ this should be the same as Linux & macos just with windows adjusted paths
 
 ### Layout Server
 
-Layout management requires persisting layouts. Layouts can either be persisted locally or remotely. The remote implementation requires spinning up a Springboot server instance, but is more robust and reflective of a real-world application.
+Layout management requires persisting layouts. Layouts can either be persisted locally or remotely.
+The remote implementation requires spinning up a Springboot server instance, but is more robust and
+reflective of a real-world application.
 
 #### Choosing local or remote
 
 Changing whether local/remote is used is configured with the following flag:
 
-1. Open `finos-vuu\vuu-ui\showcase\vite.config.js` (for Showcase), or `finos-vuu\vuu-ui\sample-apps\app-vuu-example\esbuild.mjs` (for sample app)
+1. Open `finos-vuu\vuu-ui\showcase\vite.config.js` (for Showcase),
+   or `finos-vuu\vuu-ui\sample-apps\app-vuu-example\esbuild.mjs` (for sample app)
 2. Set `"process.env.LOCAL"` flag to `true` for local, or `false` for remote
 
-The local implementation is default. It uses browser local storage. If you have chosen the remote implementation, ensure you are running the remote server.
+The local implementation is default. It uses browser local storage. If you have chosen the remote
+implementation, ensure you are running the remote server.
 
 #### Running the remote server
 
-You can run the remote server from IntelliJ or via CLI. Once running, use `http://localhost:8081/api/swagger` to review endpoints and contracts. It uses an in-memory H2 database, and can be accessed at `http://localhost:8081/api/h2-console`.
+You can run the remote server from IntelliJ or via CLI. Once running,
+use `http://localhost:8081/api/swagger` to review endpoints and contracts. It uses an in-memory H2
+database, and can be accessed at `http://localhost:8081/api/h2-console`.
 
 ##### CLI
 
@@ -69,7 +77,8 @@ mvn spring-boot:run
 
 ## Configuring IntelliJ
 
-You may prefer to run the backend using the IntelliJ IDE, if so, you will need to follow the Client Installation above to ensure that the project has built correctly.
+You may prefer to run the backend using the IntelliJ IDE, if so, you will need to follow the Client
+Installation above to ensure that the project has built correctly.
 
 1. Install the Scala plugin: file -> settings -> plugins
 2. Install Scala 2.13.10
@@ -90,7 +99,8 @@ npm run build
 ```
 
 8. In IntelliJ, select 'SimulMain' config and click run
-9. If you get a 'certificate-unknown' error, set 'Allow invalid certificates for resources loaded from localhost' to 'Enabled' in your chrome settings
+9. If you get a 'certificate-unknown' error, set 'Allow invalid certificates for resources loaded
+   from localhost' to 'Enabled' in your chrome settings
 
 ## Installation - Client
 
@@ -106,7 +116,8 @@ npm run build:app
 
 You can now open the demo app in your browser at <https://127.0.0.1:8443/index.html>
 
-Alternatively, you may choose to run the demo app in Electron. First install Electron in the tools/electron folder:
+Alternatively, you may choose to run the demo app in Electron. First install Electron in the
+tools/electron folder:
 
 ```sh
 #from top-level vuu repo (not vuu child directory in repo)
@@ -129,26 +140,36 @@ Work In Progress!
 
 ## Roadmap
 
-List the roadmap steps; alternatively link the Confluence Wiki page where the project roadmap is published.
+List the roadmap steps; alternatively link the Confluence Wiki page where the project roadmap is
+published.
 
 1. In Progress
 
 ## Contributing
 
-For any questions, bugs or feature requests please open an [issue](https://github.com/finos/vuu/issues).
+For any questions, bugs or feature requests please open
+an [issue](https://github.com/finos/vuu/issues).
 
 To submit a contribution:
 
 1. Fork it (<https://github.com/finos/vuu/fork>)
 2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Read our [contribution guidelines](.github/CONTRIBUTING.md) and [Community Code of Conduct](https://www.finos.org/code-of-conduct)
+3. Read our [contribution guidelines](.github/CONTRIBUTING.md)
+   and [Community Code of Conduct](https://www.finos.org/code-of-conduct)
 4. Commit your changes (`git commit -am 'Add some fooBar'`)
 5. Push to the branch (`git push origin feature/fooBar`)
 6. Create a new Pull Request
 
-_NOTE:_ Commits and pull requests to FINOS repositories will only be accepted from those contributors with an active, executed Individual Contributor License Agreement (ICLA) with FINOS OR who are covered under an existing and active Corporate Contribution License Agreement (CCLA) executed with FINOS. Commits from individuals not covered under an ICLA or CCLA will be flagged and blocked by the FINOS Clabot tool (or [EasyCLA](https://community.finos.org/docs/governance/Software-Projects/easycla)). Please note that some CCLAs require individuals/employees to be explicitly named on the CCLA.
+_NOTE:_ Commits and pull requests to FINOS repositories will only be accepted from those
+contributors with an active, executed Individual Contributor License Agreement (ICLA) with FINOS OR
+who are covered under an existing and active Corporate Contribution License Agreement (CCLA)
+executed with FINOS. Commits from individuals not covered under an ICLA or CCLA will be flagged and
+blocked by the FINOS Clabot tool (
+or [EasyCLA](https://community.finos.org/docs/governance/Software-Projects/easycla)). Please note
+that some CCLAs require individuals/employees to be explicitly named on the CCLA.
 
-_Need an ICLA? Unsure if you are covered under an existing CCLA? Email [help@finos.org](mailto:help@finos.org)_
+_Need an ICLA? Unsure if you are covered under an existing CCLA?
+Email [help@finos.org](mailto:help@finos.org)_
 
 ## License
 
