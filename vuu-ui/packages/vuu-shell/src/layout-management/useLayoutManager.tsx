@@ -10,25 +10,16 @@ import {
   ApplicationSettings,
   loadingApplicationJson,
   LayoutJSON,
-  LayoutPersistenceManager,
   LocalLayoutPersistenceManager,
-  RemoteLayoutPersistenceManager,
   resolveJSONPath,
   defaultApplicationJson,
+  LayoutPersistenceManager,
 } from "@finos/vuu-layout";
 import { NotificationLevel, useNotifications } from "@finos/vuu-popups";
 import { LayoutMetadata, LayoutMetadataDto } from "./layoutTypes";
 
-let _persistenceManager: LayoutPersistenceManager;
 
-const getPersistenceManager = () => {
-  if (_persistenceManager === undefined) {
-    _persistenceManager = process.env.LOCAL
-      ? new LocalLayoutPersistenceManager()
-      : new RemoteLayoutPersistenceManager();
-  }
-  return _persistenceManager;
-};
+const persistenceManager: LayoutPersistenceManager = LocalLayoutPersistenceManager();
 
 export const LayoutManagementContext = React.createContext<{
   layoutMetadata: LayoutMetadata[];
@@ -118,7 +109,6 @@ export const LayoutManagementProvider = (
   );
 
   useEffect(() => {
-    const persistenceManager = getPersistenceManager();
 
     persistenceManager
       .loadMetadata()
@@ -155,7 +145,7 @@ export const LayoutManagementProvider = (
   const saveApplicationLayout = useCallback(
     (layout: LayoutJSON) => {
       setApplicationLayout(layout, false);
-      getPersistenceManager().saveApplicationJSON(applicationJSONRef.current);
+      persistenceManager.saveApplicationJSON(applicationJSONRef.current);
     },
     [setApplicationLayout]
   );
@@ -168,7 +158,7 @@ export const LayoutManagementProvider = (
       );
 
       if (layoutToSave) {
-        getPersistenceManager()
+        persistenceManager
           .createLayout(metadata, ensureLayoutHasTitle(layoutToSave, metadata))
           .then((metadata) => {
             notify({
@@ -200,14 +190,14 @@ export const LayoutManagementProvider = (
   const saveApplicationSettings = useCallback(
     (settings: ApplicationSettings) => {
       setApplicationSettings(settings);
-      getPersistenceManager().saveApplicationJSON(applicationJSONRef.current);
+      persistenceManager.saveApplicationJSON(applicationJSONRef.current);
     },
     [setApplicationSettings]
   );
 
   const loadLayoutById = useCallback(
     (id: string) => {
-      getPersistenceManager()
+      persistenceManager
         .loadLayout(id)
         .then((layoutJson) => {
           const { layout: currentLayout } = applicationJSONRef.current;

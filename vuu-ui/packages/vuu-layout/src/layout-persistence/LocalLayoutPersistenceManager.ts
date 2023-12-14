@@ -17,19 +17,16 @@ import { defaultApplicationJson } from "./defaultApplicationJson";
 const metadataSaveLocation = "layouts/metadata";
 const layoutsSaveLocation = "layouts/layouts";
 
-export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
-  #urlKey = "api/vui";
-  constructor(urlKey?: string) {
-    if (urlKey) {
-      this.#urlKey = urlKey;
-    }
-  }
-  createLayout(
+export const LocalLayoutPersistenceManager = (
+  urlKey = "api/vui"
+): LayoutPersistenceManager => {
+
+  const createLayout = (
     metadata: LayoutMetadataDto,
     layout: LayoutJSON
-  ): Promise<LayoutMetadata> {
+  ): Promise<LayoutMetadata> => {
     return new Promise((resolve) => {
-      Promise.all([this.loadLayouts(), this.loadMetadata()]).then(
+      Promise.all([loadLayouts(), loadMetadata()]).then(
         ([existingLayouts, existingMetadata]) => {
           const id = getUniqueId();
           const newMetadata: LayoutMetadata = {
@@ -38,7 +35,7 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
             created: formatDate(new Date(), "dd.mm.yyyy"),
           };
 
-          this.saveLayoutsWithMetadata(
+          saveLayoutsWithMetadata(
             [...existingLayouts, { id, json: layout }],
             [...existingMetadata, newMetadata]
           );
@@ -46,16 +43,16 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
         }
       );
     });
-  }
+  };
 
-  updateLayout(
+  const updateLayout = (
     id: string,
     newMetadata: LayoutMetadataDto,
     newLayout: LayoutJSON
-  ): Promise<void> {
+  ): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.validateIds(id)
-        .then(() => Promise.all([this.loadLayouts(), this.loadMetadata()]))
+      validateIds(id)
+        .then(() => Promise.all([loadLayouts(), loadMetadata()]))
         .then(([existingLayouts, existingMetadata]) => {
           const updatedLayouts = existingLayouts.map((layout) =>
             layout.id === id ? { ...layout, json: newLayout } : layout
@@ -63,33 +60,33 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
           const updatedMetadata = existingMetadata.map((metadata) =>
             metadata.id === id ? { ...metadata, ...newMetadata } : metadata
           );
-          this.saveLayoutsWithMetadata(updatedLayouts, updatedMetadata);
+          saveLayoutsWithMetadata(updatedLayouts, updatedMetadata);
           resolve();
         })
         .catch((e) => reject(e));
     });
-  }
+  };
 
-  deleteLayout(id: string): Promise<void> {
+  const deleteLayout = (id: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      this.validateIds(id)
-        .then(() => Promise.all([this.loadLayouts(), this.loadMetadata()]))
+      validateIds(id)
+        .then(() => Promise.all([loadLayouts(), loadMetadata()]))
         .then(([existingLayouts, existingMetadata]) => {
           const layouts = existingLayouts.filter((layout) => layout.id !== id);
           const metadata = existingMetadata.filter(
             (metadata) => metadata.id !== id
           );
-          this.saveLayoutsWithMetadata(layouts, metadata);
+          saveLayoutsWithMetadata(layouts, metadata);
           resolve();
         })
         .catch((e) => reject(e));
     });
-  }
+  };
 
-  loadLayout(id: string): Promise<LayoutJSON> {
+  const loadLayout = (id: string): Promise<LayoutJSON> => {
     return new Promise((resolve, reject) => {
-      this.validateId(id, "layout")
-        .then(() => this.loadLayouts())
+      validateId(id, "layout")
+        .then(() => loadLayouts())
         .then((existingLayouts) => {
           const foundLayout = existingLayouts.find(
             (layout) => layout.id === id
@@ -102,30 +99,32 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
         })
         .catch((e) => reject(e));
     });
-  }
+  };
 
-  loadMetadata(): Promise<LayoutMetadata[]> {
+  const loadMetadata = (): Promise<LayoutMetadata[]> => {
     return new Promise((resolve) => {
       const metadata = getLocalEntity<LayoutMetadata[]>(metadataSaveLocation);
       resolve(metadata || []);
     });
-  }
+  };
 
-  loadApplicationJSON(): Promise<ApplicationJSON> {
+  const loadApplicationJSON = (): Promise<ApplicationJSON> => {
     return new Promise((resolve) => {
-      const applicationJSON = getLocalEntity<ApplicationJSON>(this.#urlKey);
+      const applicationJSON = getLocalEntity<ApplicationJSON>(urlKey);
       if (applicationJSON) {
         resolve(applicationJSON);
       } else {
         resolve(defaultApplicationJson);
       }
     });
-  }
+  };
 
-  saveApplicationJSON(applicationJSON: ApplicationJSON): Promise<void> {
+  const saveApplicationJSON = (
+    applicationJSON: ApplicationJSON
+  ): Promise<void> => {
     return new Promise((resolve, reject) => {
       const savedLayout = saveLocalEntity<ApplicationJSON>(
-        this.#urlKey,
+        urlKey,
         applicationJSON
       );
       if (savedLayout) {
@@ -134,29 +133,29 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
         reject(new Error("Application Json failed to save"));
       }
     });
-  }
+  };
 
-  private loadLayouts(): Promise<Layout[]> {
+  const loadLayouts = (): Promise<Layout[]> => {
     return new Promise((resolve) => {
       const layouts = getLocalEntity<Layout[]>(layoutsSaveLocation);
       resolve(layouts || []);
     });
-  }
+  };
 
-  private saveLayoutsWithMetadata(
+  const saveLayoutsWithMetadata = (
     layouts: Layout[],
     metadata: LayoutMetadata[]
-  ): void {
+  ): void => {
     saveLocalEntity<Layout[]>(layoutsSaveLocation, layouts);
     saveLocalEntity<LayoutMetadata[]>(metadataSaveLocation, metadata);
-  }
+  };
 
   // Ensures that there is exactly one Layout entry and exactly one Metadata
   // entry in local storage corresponding to the provided ID.
-  private async validateIds(id: string): Promise<void> {
+  const validateIds = async (id: string): Promise<void> => {
     return Promise.all([
-      this.validateId(id, "metadata").catch((error) => error.message),
-      this.validateId(id, "layout").catch((error) => error.message),
+      validateId(id, "metadata").catch((error) => error.message),
+      validateId(id, "layout").catch((error) => error.message),
     ]).then((errorMessages: string[]) => {
       // filter() is used to remove any blank messages before joining.
       // Avoids orphaned delimiters in combined messages, e.g. "; " or "; error 2"
@@ -167,17 +166,16 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
         throw new Error(combinedMessage);
       }
     });
-  }
+  };
 
   // Ensures that there is exactly one element (Layout or Metadata) in local
   // storage corresponding to the provided ID.
-  private validateId(
+  const validateId = (
     id: string,
     dataType: "metadata" | "layout"
-  ): Promise<void> {
+  ): Promise<void> => {
     return new Promise((resolve, reject) => {
-      const loadFunc =
-        dataType === "metadata" ? this.loadMetadata : this.loadLayouts;
+      const loadFunc = dataType === "metadata" ? loadMetadata : loadLayouts;
 
       loadFunc().then((array: WithId[]) => {
         const count = array.filter((element) => element.id === id).length;
@@ -195,5 +193,15 @@ export class LocalLayoutPersistenceManager implements LayoutPersistenceManager {
         }
       });
     });
+  };
+
+  return {
+    saveApplicationJSON,
+    createLayout,
+    loadApplicationJSON,
+    loadLayout,
+    loadMetadata,
+    updateLayout,
+    deleteLayout
   }
-}
+};

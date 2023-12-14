@@ -11,13 +11,11 @@ export type CreateLayoutResponseDto = { metadata: LayoutMetadata };
 export type GetLayoutResponseDto = { definition: LayoutJSON };
 export type GetApplicationResponseDto = { definition: ApplicationJSON };
 
-export class RemoteLayoutPersistenceManager
-  implements LayoutPersistenceManager
-{
-  createLayout(
+export const RemoteLayoutPersistenceManager = (): LayoutPersistenceManager => {
+  const createLayout = (
     metadata: LayoutMetadataDto,
     layout: LayoutJSON
-  ): Promise<LayoutMetadata> {
+  ): Promise<LayoutMetadata> =>{
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${layoutsSaveLocation}`, {
         headers: {
@@ -46,11 +44,11 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  updateLayout(
+  const updateLayout = (
     id: string,
     metadata: LayoutMetadataDto,
     newLayoutJson: LayoutJSON
-  ): Promise<void> {
+  ): Promise<void> => {
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${layoutsSaveLocation}/${id}`, {
         method: "PUT",
@@ -71,7 +69,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  deleteLayout(id: string): Promise<void> {
+  const deleteLayout =(id: string): Promise<void> => {
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${layoutsSaveLocation}/${id}`, {
         method: "DELETE",
@@ -88,7 +86,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  loadLayout(id: string): Promise<LayoutJSON> {
+  const loadLayout = (id: string): Promise<LayoutJSON> => {
     return new Promise((resolve, reject) => {
       fetch(`${baseURL}/${layoutsSaveLocation}/${id}`, {
         method: "GET",
@@ -110,7 +108,7 @@ export class RemoteLayoutPersistenceManager
     });
   }
 
-  loadMetadata(): Promise<LayoutMetadata[]> {
+  const loadMetadata = (): Promise<LayoutMetadata[]> =>{
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${metadataSaveLocation}`, {
         method: "GET",
@@ -132,7 +130,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  saveApplicationJSON(applicationJSON: ApplicationJSON): Promise<void> {
+  const saveApplicationJSON = (applicationJSON: ApplicationJSON): Promise<void> =>{
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${applicationLayoutsSaveLocation}`, {
         method: "PUT",
@@ -154,7 +152,7 @@ export class RemoteLayoutPersistenceManager
     );
   }
 
-  loadApplicationJSON(): Promise<ApplicationJSON> {
+  const loadApplicationJSON =(): Promise<ApplicationJSON>=> {
     return new Promise((resolve, reject) =>
       fetch(`${baseURL}/${applicationLayoutsSaveLocation}`, {
         method: "GET",
@@ -181,5 +179,15 @@ export class RemoteLayoutPersistenceManager
           reject(error);
         })
     );
+  }
+
+  return {
+    saveApplicationJSON,
+    createLayout,
+    loadApplicationJSON,
+    loadLayout,
+    loadMetadata,
+    updateLayout,
+    deleteLayout
   }
 }
